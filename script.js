@@ -1,15 +1,17 @@
 let orderType = ''; 
-let currentCategory = 'coffee'; // 현재 선택된 카테고리 (간식 구분용)
-let currentTemp = '아이스'; // 핫/아이스 상태 저장
-let currentOptions = { sweetness: '기본(달게)', milk: '일반 우유' }; // 모달에서 선택한 옵션
-let currentItem = { name: '', price: 0 }; 
+let currentCategory = 'coffee'; 
+let currentTemp = '아이스'; 
 let cart = []; 
 let fontStep = 0; 
 
-// 화면 전환
+let detailBasePrice = 0;
+let detailItemName = '';
+let detailSelectedSize = { name: '작은', price: 0 };
+let detailFreeOptions = new Set();
+let detailPaidOptions = [];
+
 function hideAllScreens() {
-  const screens = document.querySelectorAll('.screen');
-  screens.forEach(s => s.classList.add('hidden'));
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
 }
 
 function goToMenu(type) {
@@ -25,90 +27,192 @@ function goToHome() {
   updateCartUI();
 }
 
-// 탭(카테고리) 전환
 function changeCategory(category, element) {
-  currentCategory = category; // 상태 저장
-  
-  const btns = document.querySelectorAll('.category-btn');
-  btns.forEach(btn => btn.classList.remove('active'));
+  currentCategory = category; 
+  document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
   element.classList.add('active');
-
-  const grids = document.querySelectorAll('.menu-grid');
-  grids.forEach(grid => grid.classList.add('hidden'));
+  document.querySelectorAll('.menu-grid').forEach(grid => grid.classList.add('hidden'));
   document.getElementById('list-' + category).classList.remove('hidden');
 
-  // 간식 탭이면 핫/아이스 버튼 숨기기
   const tempToggle = document.getElementById('temp-toggle-area');
-  if(category === 'snack') {
-    tempToggle.style.visibility = 'hidden';
-  } else {
-    tempToggle.style.visibility = 'visible';
-  }
+  tempToggle.style.visibility = (category === 'snack') ? 'hidden' : 'visible';
 }
 
-// 핫/아이스 토글 (색상 변경 및 상태 저장)
 function setTemp(temp, element) {
   currentTemp = temp;
-  const btns = document.querySelectorAll('.temp-btn');
-  btns.forEach(btn => btn.classList.remove('active-temp'));
+  document.querySelectorAll('.temp-btn').forEach(btn => btn.classList.remove('active-temp'));
   element.classList.add('active-temp');
 }
 
-// 글씨 크기 조절
 function toggleFontSize() {
   fontStep = (fontStep + 1) % 4; 
   const scaleValues = [1, 1.1, 1.2, 1.3]; 
   document.documentElement.style.setProperty('--font-scale', scaleValues[fontStep]);
 }
 
-// 모달창 옵션 선택 시 색상 변경
-function setOption(type, value, element) {
-  currentOptions[type] = value;
+// === 메뉴별 옵션 보이기/숨기기 스마트 로직 ===
+function openDetail(name, price) {
+  detailItemName = name;
+  detailBasePrice = price;
   
-  // 클릭한 버튼의 형제 요소들 색상 초기화
-  const parent = element.parentElement;
-  if(type === 'sweetness') {
-    parent.querySelectorAll('.option-btn').forEach(btn => btn.classList.remove('active-option'));
-    element.classList.add('active-option');
-  } else if (type === 'milk') {
-    parent.querySelectorAll('.toggle-item').forEach(btn => btn.classList.remove('active-toggle'));
-    element.classList.add('active-toggle');
-  }
-}
-
-// 모달창 열기
-function openModal(name, price) {
-  currentItem = { name: name, price: price };
-  document.getElementById('modal-name').innerText = name;
-  document.getElementById('modal-price').innerText = '₩ ' + price.toLocaleString();
+  detailSelectedSize = { name: '작은', price: 0 };
+  detailFreeOptions.clear();
+  detailPaidOptions = [];
   
-  // 간식이면 옵션 영역 숨기기
+  document.getElementById('detail-name').innerText = name;
+  
   if(currentCategory === 'snack') {
-    document.getElementById('modal-options-area').style.display = 'none';
+    document.getElementById('detail-options-area').style.display = 'none';
   } else {
-    document.getElementById('modal-options-area').style.display = 'block';
+    document.getElementById('detail-options-area').style.display = 'block';
+    
+    // 버튼 스타일 리셋
+    document.querySelectorAll('.free-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
+    document.querySelectorAll('.paid-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
+    document.querySelectorAll('.size-box').forEach(b => b.classList.remove('active-opt'));
+    document.querySelector('.size-box').classList.add('active-opt'); // 사이즈는 무조건 '작은'부터
+
+    // --- 유료옵션(샷, 두유) 필터링 로직 ---
+    const milkDrinks = ['카페라떼', '바닐라라떼', '카라멜마끼아또', '크림콜드브루']; // 우유가 들어가는 메뉴 리스트
+    const optShot = document.getElementById('opt-shot');
+    const optMilk = document.getElementById('opt-milk');
+    const paidTitle = document.getElementById('paid-options-title');
+    const paidGrid = document.getElementById('paid-options-grid');
+
+    // 1. 기본적으로 다 보이게 세팅
+    optShot.style.display = 'flex';
+    optMilk.style.display = 'flex';
+    paidTitle.style.display = 'block';
+    paidGrid.style.display = 'grid';
+    paidGrid.style.gridTemplateColumns = 'repeat(2, 1fr)'; // 2칸 배열
+
+    // 2. 커피가 아니면(차, 주스) '샷 추가' 숨기기
+    if (currentCategory !== 'coffee') {
+      optShot.style.display = 'none';
+    }
+
+    // 3. 우유가 들어가는 음료가 아니면 '두유 변경' 숨기기
+    if (!milkDrinks.includes(name)) {
+      optMilk.style.display = 'none';
+    }
+
+    // 4. 둘 다 숨겨졌으면 '유료 옵션' 타이틀과 영역 자체를 숨김
+    if (optShot.style.display === 'none' && optMilk.style.display === 'none') {
+      paidTitle.style.display = 'none';
+      paidGrid.style.display = 'none';
+    } else if (optShot.style.display === 'none' || optMilk.style.display === 'none') {
+      // 5. 하나만 보일 땐 예쁘게 가운데 꽉 차게 1칸으로 변경
+      paidGrid.style.gridTemplateColumns = '1fr';
+    }
   }
   
-  document.getElementById('option-modal').classList.remove('hidden');
+  updateDetailBottomBar();
+  hideAllScreens();
+  document.getElementById('detail-screen').classList.remove('hidden');
 }
 
-function closeModal() {
-  document.getElementById('option-modal').classList.add('hidden');
+function closeDetail() {
+  hideAllScreens();
+  document.getElementById('menu-screen').classList.remove('hidden');
 }
 
-// 장바구니 담기 (옵션 포함)
+function toggleFreeOption(optName, element) {
+  if (optName === '달게') {
+    detailFreeOptions.delete('덜 달게');
+    document.querySelectorAll('.free-options-grid .opt-box')[1].classList.remove('active-opt');
+  } else if (optName === '덜 달게') {
+    detailFreeOptions.delete('달게');
+    document.querySelectorAll('.free-options-grid .opt-box')[0].classList.remove('active-opt');
+  }
+
+  if (detailFreeOptions.has(optName)) {
+    detailFreeOptions.delete(optName);
+    element.classList.remove('active-opt');
+  } else {
+    detailFreeOptions.add(optName);
+    element.classList.add('active-opt');
+  }
+  updateDetailBottomBar();
+}
+
+function togglePaidOption(optName, price, element) {
+  const existingIndex = detailPaidOptions.findIndex(o => o.name === optName);
+  if (existingIndex > -1) {
+    detailPaidOptions.splice(existingIndex, 1);
+    element.classList.remove('active-opt');
+  } else {
+    detailPaidOptions.push({ name: optName, price: price });
+    element.classList.add('active-opt');
+  }
+  updateDetailBottomBar();
+}
+
+function selectSize(sizeName, price, element) {
+  detailSelectedSize = { name: sizeName, price: price };
+  document.querySelectorAll('.size-box').forEach(btn => btn.classList.remove('active-opt'));
+  element.classList.add('active-opt');
+  updateDetailBottomBar();
+}
+
+function updateDetailBottomBar() {
+  let total = detailBasePrice + detailSelectedSize.price;
+  detailPaidOptions.forEach(opt => total += opt.price);
+
+  document.getElementById('detail-total-price').innerText = '₩ ' + total.toLocaleString();
+
+  let summaryText = [];
+  if (currentCategory !== 'snack') {
+    document.getElementById('bottom-name').innerText = `${detailItemName} (${detailSelectedSize.name})`;
+    summaryText.push(currentTemp);
+    detailFreeOptions.forEach(opt => summaryText.push(opt));
+    detailPaidOptions.forEach(opt => summaryText.push(opt.name));
+    
+    document.getElementById('bottom-options').innerText = summaryText.length > 0 ? summaryText.join(', ') : '기본 옵션';
+  } else {
+    document.getElementById('bottom-name').innerText = detailItemName;
+    document.getElementById('bottom-options').innerText = '';
+  }
+}
+
 function addToCart() {
-  let itemToAdd = { ...currentItem };
-  
-  // 간식이 아닐 때만 핫/아이스, 당도, 우유 옵션 저장
-  if(currentCategory !== 'snack') {
-    itemToAdd.temp = currentTemp;
-    itemToAdd.sweetness = currentOptions.sweetness;
-    itemToAdd.milk = currentOptions.milk;
+  let finalPrice = detailBasePrice + detailSelectedSize.price;
+  detailPaidOptions.forEach(opt => finalPrice += opt.price);
+
+  let optionArray = [];
+  if (currentCategory !== 'snack') {
+    optionArray.push(currentTemp);
+    if(detailSelectedSize.name !== '작은') optionArray.push(`사이즈: ${detailSelectedSize.name}`);
+    detailFreeOptions.forEach(opt => optionArray.push(opt));
+    detailPaidOptions.forEach(opt => optionArray.push(opt.name));
   }
+
+  let optionString = optionArray.join(' / ');
+
+  const existingItemIndex = cart.findIndex(item => 
+    item.name === detailItemName && item.optionStr === optionString
+  );
+
+  if (existingItemIndex > -1) {
+    cart[existingItemIndex].qty += 1; 
+  } else {
+    cart.push({
+      name: detailItemName,
+      price: finalPrice,
+      optionStr: optionString,
+      qty: 1
+    });
+  }
+
+  closeDetail();
+  updateCartUI();
+}
+
+function changeQty(index, delta) {
+  cart[index].qty += delta;
   
-  cart.push(itemToAdd); 
-  closeModal();
+  if (cart[index].qty <= 0) {
+    cart.splice(index, 1); 
+  }
   updateCartUI();
 }
 
@@ -122,6 +226,7 @@ function updateCartUI() {
   const emptyText = document.getElementById('cart-empty');
   cartList.innerHTML = '';
   let totalPrice = 0;
+  let totalCount = 0;
 
   if (cart.length === 0) {
     emptyText.style.display = 'block';
@@ -130,36 +235,36 @@ function updateCartUI() {
     emptyText.style.display = 'none';
     cartList.style.display = 'flex';
     
-    cart.forEach(item => {
-      totalPrice += item.price;
+    cart.forEach((item, index) => {
+      const itemTotal = item.price * item.qty;
+      totalPrice += itemTotal;
+      totalCount += item.qty;
       
-      // 하단 옵션 텍스트 생성 (예: 아이스 / 덜 달게 / 두유로 변경)
-      let optionTextArray = [];
-      if(item.temp) optionTextArray.push(item.temp);
-      if(item.sweetness && item.sweetness !== '기본(달게)') optionTextArray.push(item.sweetness);
-      if(item.milk && item.milk !== '일반 우유') optionTextArray.push(item.milk);
-      
-      let optionString = optionTextArray.length > 0 ? optionTextArray.join(' / ') : '';
-
       const div = document.createElement('div');
       div.className = 'cart-item';
       div.innerHTML = `
         <div class="cart-item-info">
           <strong class="scalable-text" style="--base-size: 14px;">${item.name}</strong>
-          ${optionString ? `<span class="cart-item-options scalable-text">${optionString}</span>` : ''}
+          ${item.optionStr ? `<span class="cart-item-options scalable-text">${item.optionStr}</span>` : ''}
         </div>
-        <span class="scalable-text" style="--base-size: 13px; font-weight: bold; color: #4a2c11;">₩ ${item.price.toLocaleString()}</span>
+        <div class="cart-item-right">
+          <div class="qty-control">
+            <button onclick="changeQty(${index}, -1)">-</button>
+            <span>${item.qty}</span>
+            <button onclick="changeQty(${index}, 1)">+</button>
+          </div>
+          <span class="scalable-text" style="--base-size: 13px; font-weight: bold; color: #4a2c11;">₩ ${itemTotal.toLocaleString()}</span>
+        </div>
       `;
       cartList.appendChild(div);
     });
   }
 
-  document.getElementById('total-count').innerText = cart.length + '개';
+  document.getElementById('total-count').innerText = totalCount + '개';
   document.getElementById('total-price').innerText = '₩ ' + totalPrice.toLocaleString();
   document.getElementById('final-price').innerText = '₩ ' + totalPrice.toLocaleString();
 }
 
-// --- 결제 프로세스 ---
 function goToPaymentMethod() {
   if(cart.length === 0) {
     alert('장바구니가 비어있습니다. 메뉴를 선택해주세요.');
@@ -174,7 +279,6 @@ function processPayment(method) {
   const processingScreen = document.getElementById('processing-screen');
   processingScreen.classList.remove('hidden');
   
-  // 결제 수단에 따라 문구와 아이콘 변경
   if(method === 'card') {
     document.getElementById('process-icon').innerText = '💳';
     document.getElementById('process-text').innerText = 'IC카드를 삽입해주세요';
@@ -183,27 +287,17 @@ function processPayment(method) {
     document.getElementById('process-text').innerText = '바코드 인식중...';
   }
 
-  // 2.5초 뒤에 결제 성공 화면으로 자동 이동
-  setTimeout(() => {
-    showSuccessScreen();
-  }, 2500);
+  setTimeout(() => { showSuccessScreen(); }, 2500);
 }
 
 function showSuccessScreen() {
   hideAllScreens();
   document.getElementById('success-screen').classList.remove('hidden');
-  
-  // 랜덤 대기번호 생성 (100 ~ 999)
-  const randomNum = Math.floor(Math.random() * 900) + 100;
-  document.getElementById('order-number').innerText = randomNum;
+  document.getElementById('order-number').innerText = Math.floor(Math.random() * 900) + 100;
 
-  // 4초 뒤에 처음 화면으로 초기화
-  setTimeout(() => {
-    goToHome();
-  }, 4000);
+  setTimeout(() => { goToHome(); }, 4000);
 }
 
-// --- 음성 모드 ---
 function openVoiceMode() {
   hideAllScreens();
   document.getElementById('voice-screen').classList.remove('hidden');
