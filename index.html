@@ -5,101 +5,106 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mellow Bean Cafe</title>
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div id="root">
     
     <div id="home-screen" class="screen">
       <header class="header">
-        <div class="home-btn">
-          <span>🏠</span><p>처음으로</p>
-        </div>
+        <div class="home-btn"><span>🏠</span><p>처음으로</p></div>
         <div class="lang-btn">🌐 한국어 ⌄</div>
       </header>
-      <main class="main-home" onclick="goToMenu()">
-        <div class="logo-area">
+      <main class="main-home">
+        <div class="logo-area" onclick="goToMenu('매장')">
           <div class="bean-icon">☕</div>
           <h1 class="logo-title">Mellow Bean Cafe</h1>
           <p class="subtitle">오늘도, 당신의 하루가 더 따뜻해지길</p>
         </div>
         <div class="touch-text">
-          <h2>화면을 터치하세요</h2>
+          <h2 class="scalable-text">화면을 터치하세요</h2>
+        </div>
+        
+        <div class="order-type-container">
+          <button class="order-type-btn scalable-text" onclick="goToMenu('매장')">🍽️ 먹고가기<br><span>(매장)</span></button>
+          <button class="order-type-btn scalable-text" onclick="goToMenu('포장')">🛍️ 가져가기<br><span>(포장)</span></button>
         </div>
       </main>
       <footer class="footer-home">
-        <button class="bottom-btn"><span class="icon">🎙️</span>음성 모드</button>
-        <button class="bottom-btn"><span class="icon">🎧</span>직원 호출</button>
+        <button class="bottom-btn scalable-text" onclick="openVoiceMode()"><span class="icon">🎙️</span>음성 모드</button>
+        <button class="bottom-btn scalable-text"><span class="icon">🎧</span>직원 호출</button>
       </footer>
     </div>
 
     <div id="menu-screen" class="screen hidden">
       <header class="header">
-        <div class="home-btn" onclick="goToHome()">
-          <span>🏠</span><p>처음으로</p>
-        </div>
+        <div class="home-btn" onclick="goToHome()"><span>🏠</span><p>처음으로</p></div>
         <div class="logo-title-small">Mellow Bean Cafe</div>
         <div class="lang-btn">🌐 한국어 ⌄</div>
       </header>
 
       <nav class="category-nav">
-        <div class="category-btn active">☕ 커피</div>
-        <div class="category-btn">🍵 차</div>
-        <div class="category-btn">🥤 주스</div>
-        <div class="category-btn">🍰 간식</div>
+        <div class="category-btn active scalable-text" onclick="changeCategory('coffee', this)">☕ 커피</div>
+        <div class="category-btn scalable-text" onclick="changeCategory('tea', this)">🍵 차</div>
+        <div class="category-btn scalable-text" onclick="changeCategory('juice', this)">🥤 주스</div>
+        <div class="category-btn scalable-text" onclick="changeCategory('snack', this)">🍰 간식</div>
       </nav>
 
       <div class="main-content">
         <div class="temp-toggle">
-          <div class="temp-btn">핫</div>
-          <div class="temp-btn active-temp">아이스</div>
+          <div class="temp-btn scalable-text">핫</div>
+          <div class="temp-btn active-temp scalable-text">아이스</div>
         </div>
         
-        <div class="menu-grid">
-          <div class="menu-card" onclick="openModal('아메리카노', '4,000')">
-            <div class="img-placeholder"></div>
-            <div class="menu-info"><p class="menu-name">아메리카노</p><p class="menu-price">₩ 4,000</p></div>
-          </div>
-          <div class="menu-card" onclick="openModal('카페라떼', '4,800')">
-            <div class="img-placeholder"></div>
-            <div class="menu-info"><p class="menu-name">카페라떼</p><p class="menu-price">₩ 4,800</p></div>
-          </div>
-          <div class="menu-card" onclick="openModal('바닐라라떼', '5,300')">
-            <div class="img-placeholder"></div>
-            <div class="menu-info"><p class="menu-name">바닐라라떼</p><p class="menu-price">₩ 5,300</p></div>
-          </div>
-          <div class="menu-card" onclick="openModal('카라멜마끼아또', '5,500')">
-            <div class="img-placeholder"></div>
-            <div class="menu-info"><p class="menu-name">카라멜마끼아또</p><p class="menu-price">₩ 5,500</p></div>
-          </div>
+        <div id="list-coffee" class="menu-grid">
+          <div class="menu-card" onclick="openModal('아메리카노', 4000)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">아메리카노</p><p class="menu-price scalable-text">₩ 4,000</p></div></div>
+          <div class="menu-card" onclick="openModal('카페라떼', 4800)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">카페라떼</p><p class="menu-price scalable-text">₩ 4,800</p></div></div>
+          <div class="menu-card" onclick="openModal('바닐라라떼', 5300)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">바닐라라떼</p><p class="menu-price scalable-text">₩ 5,300</p></div></div>
+          <div class="menu-card" onclick="openModal('카라멜마끼아또', 5500)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">카라멜마끼아또</p><p class="menu-price scalable-text">₩ 5,500</p></div></div>
+          <div class="menu-card" onclick="openModal('크림콜드브루', 5800)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">크림콜드브루</p><p class="menu-price scalable-text">₩ 5,800</p></div></div>
+        </div>
+        <div id="list-tea" class="menu-grid hidden">
+          <div class="menu-card" onclick="openModal('캐모마일 티', 4500)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">캐모마일 티</p><p class="menu-price scalable-text">₩ 4,500</p></div></div>
+          <div class="menu-card" onclick="openModal('얼그레이 티', 4500)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">얼그레이 티</p><p class="menu-price scalable-text">₩ 4,500</p></div></div>
+          <div class="menu-card" onclick="openModal('유자차', 4800)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">유자차</p><p class="menu-price scalable-text">₩ 4,800</p></div></div>
+          <div class="menu-card" onclick="openModal('자몽블랙티', 5500)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">자몽블랙티</p><p class="menu-price scalable-text">₩ 5,500</p></div></div>
+          <div class="menu-card" onclick="openModal('녹차', 4000)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">녹차</p><p class="menu-price scalable-text">₩ 4,000</p></div></div>
+        </div>
+        <div id="list-juice" class="menu-grid hidden">
+          <div class="menu-card" onclick="openModal('오렌지 주스', 5000)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">오렌지 주스</p><p class="menu-price scalable-text">₩ 5,000</p></div></div>
+          <div class="menu-card" onclick="openModal('사과 주스', 5000)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">사과 주스</p><p class="menu-price scalable-text">₩ 5,000</p></div></div>
+          <div class="menu-card" onclick="openModal('딸기 바나나 주스', 5800)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">딸기 바나나 주스</p><p class="menu-price scalable-text">₩ 5,800</p></div></div>
+          <div class="menu-card" onclick="openModal('키위 주스', 5500)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">키위 주스</p><p class="menu-price scalable-text">₩ 5,500</p></div></div>
+          <div class="menu-card" onclick="openModal('망고 스무디', 6000)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">망고 스무디</p><p class="menu-price scalable-text">₩ 6,000</p></div></div>
+        </div>
+        <div id="list-snack" class="menu-grid hidden">
+          <div class="menu-card" onclick="openModal('치즈 케이크', 6500)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">치즈 케이크</p><p class="menu-price scalable-text">₩ 6,500</p></div></div>
+          <div class="menu-card" onclick="openModal('초코 머핀', 3500)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">초코 머핀</p><p class="menu-price scalable-text">₩ 3,500</p></div></div>
+          <div class="menu-card" onclick="openModal('플레인 베이글', 3000)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">플레인 베이글</p><p class="menu-price scalable-text">₩ 3,000</p></div></div>
+          <div class="menu-card" onclick="openModal('크로플', 4500)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">크로플</p><p class="menu-price scalable-text">₩ 4,500</p></div></div>
+          <div class="menu-card" onclick="openModal('마카롱', 2500)"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">마카롱</p><p class="menu-price scalable-text">₩ 2,500</p></div></div>
         </div>
       </div>
 
       <div class="cart-section">
         <div class="cart-header">
-          <span>🛍️ 주문내역</span>
-          <button class="clear-btn">전체삭제</button>
+          <span class="scalable-text">🛍️ 주문내역</span>
+          <button class="clear-btn scalable-text" onclick="clearCart()">전체삭제</button>
         </div>
-        <div class="cart-empty">주문하신 메뉴가 없습니다.</div>
-        <div class="summary-grid">
-          <div class="summary-row"><span>상품개수</span><span>0개</span></div>
-          <div class="summary-row"><span>합계금액</span><span>₩ 0</span></div>
-          <div class="summary-row discount"><span>할인금액</span><span>- ₩ 0</span></div>
-          <div class="summary-row total"><span>결제예정금액</span><span>₩ 0</span></div>
+        <div id="cart-empty" class="cart-empty scalable-text">주문하신 메뉴가 없습니다.</div>
+        <div id="cart-list" class="cart-list"></div> <div class="summary-grid">
+          <div class="summary-row"><span class="scalable-text">상품개수</span><span id="total-count" class="scalable-text">0개</span></div>
+          <div class="summary-row"><span class="scalable-text">합계금액</span><span id="total-price" class="scalable-text">₩ 0</span></div>
+          <div class="summary-row total"><span class="scalable-text">결제예정금액</span><span id="final-price" class="scalable-text">₩ 0</span></div>
         </div>
         <button class="checkout-btn">
-          💳 결제하기 <span class="checkout-sub">카드 / 간편결제</span>
+          <span class="scalable-text">💳 결제하기</span> <span class="checkout-sub">카드 / 간편결제</span>
         </button>
       </div>
 
-      <div class="banner">
-        <span>🥤 텀블러를 사용하시면 </span><strong>300원 할인 혜택!</strong><span class="arrow">&gt;</span>
-      </div>
-
       <footer class="bottom-bar">
-        <button class="action-btn">🎙️ 음성 모드</button><span class="divider">|</span>
-        <button class="action-btn">가 글자 크게</button><span class="divider">|</span>
-        <button class="action-btn">🎧 직원 호출</button>
+        <button class="action-btn scalable-text" onclick="openVoiceMode()">🎙️ 음성 모드</button><span class="divider">|</span>
+        <button class="action-btn scalable-text" onclick="toggleFontSize()">가 글자 크게</button><span class="divider">|</span>
+        <button class="action-btn scalable-text">🎧 직원 호출</button>
       </footer>
     </div>
 
@@ -109,34 +114,43 @@
           <div class="product-info">
             <div class="img-placeholder-large"></div>
             <div>
-              <h2 id="modal-name" class="product-name">아메리카노</h2>
-              <p id="modal-price" class="product-price">₩ 4,000</p>
+              <h2 id="modal-name" class="product-name scalable-text">메뉴명</h2>
+              <p id="modal-price" class="product-price scalable-text">₩ 0</p>
             </div>
           </div>
         </div>
         <div class="modal-body">
-          <h3 class="section-title">옵션 선택</h3>
+          <h3 class="section-title scalable-text">옵션 선택</h3>
           <div class="option-group">
-            <p class="option-label">당도 선택</p>
+            <p class="option-label scalable-text">당도 선택</p>
             <div class="grid2">
-              <button class="option-btn">안 달게</button>
-              <button class="option-btn">덜 달게</button>
-              <button class="option-btn">달게</button>
-              <button class="option-btn">많이 달게</button>
-            </div>
-          </div>
-          <div class="option-group">
-            <p class="option-label">우유 변경</p>
-            <div class="toggle-container">
-              <div class="toggle-item">일반 우유</div>
-              <div class="toggle-item active-toggle">두유로 변경</div>
+              <button class="option-btn scalable-text">안 달게</button>
+              <button class="option-btn scalable-text">덜 달게</button>
+              <button class="option-btn scalable-text">달게</button>
+              <button class="option-btn scalable-text">많이 달게</button>
             </div>
           </div>
           <div class="action-group">
-            <button class="confirm-btn" onclick="closeModal()">선택 완료</button>
-            <button class="cancel-btn" onclick="closeModal()">취소</button>
+            <button class="confirm-btn scalable-text" onclick="addToCart()">선택 완료</button>
+            <button class="cancel-btn scalable-text" onclick="closeModal()">취소</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div id="voice-screen" class="screen hidden" style="background-color: #1a1a1a;">
+      <div class="voice-header">
+        <span>|||\|</span> 음성 안내 접근성 모드
+      </div>
+      <div class="voice-list">
+        <div class="voice-item">1. 음료 주문</div>
+        <div class="voice-item">2. 메뉴 검색</div>
+        <div class="voice-item">3. 직원 호출</div>
+        <div class="voice-item">4. 설정</div>
+        <div class="voice-item" onclick="closeVoiceMode()">5. 종료</div>
+      </div>
+      <div class="voice-footer">
+        키패드 숫자를 눌러<br>선택하세요.
       </div>
     </div>
 
