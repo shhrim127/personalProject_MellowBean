@@ -31,7 +31,7 @@
       </main>
       <footer class="footer-home">
         <button class="bottom-btn scalable-text" onclick="openVoiceMode()"><span class="icon">🎙️</span>음성 모드</button>
-        <button class="bottom-btn scalable-text" onclick="alert('직원을 호출했습니다. 잠시만 기다려주세요.')"><span class="icon">🎧</span>직원 호출</button>
+        <button class="bottom-btn scalable-text" onclick="alert('직원을 호출했습니다.')"><span class="icon">🎧</span>직원 호출</button>
       </footer>
     </div>
 
@@ -110,7 +110,7 @@
     <div id="detail-screen" class="screen hidden" style="background-color: #faf6f2;">
       <header class="header">
         <div class="home-btn" onclick="closeDetail()" style="border-radius: 50%; padding: 12px 16px; font-size: 16px;">&lt;</div>
-        <div class="logo-title-small" style="text-align: center;">Mellow Bean Cafe<br><span style="font-size: 12px; color: #666; font-family: 'Noto Sans KR', sans-serif;">오늘도, 당신의 하루가 더 따뜻해지길</span></div>
+        <div class="logo-title-small" style="text-align: center;">Mellow Bean Cafe<br><span style="font-size: 12px; color: #666;">오늘도, 당신의 하루가 더 따뜻해지길</span></div>
         <div class="lang-btn">🌐 한국어 ⌄</div>
       </header>
 
@@ -118,9 +118,11 @@
         <div class="product-hero">
           <div class="hero-img-placeholder"></div>
           <div class="hero-info">
-            <h2 id="detail-name" class="scalable-text" style="font-size: 28px; color: var(--primary-brown);">메뉴명 <span class="badge">BEST</span></h2>
-            <p id="detail-desc" class="scalable-text" style="color: #555; margin-top: 10px; line-height: 1.5;">선택하신 음료를 나만의 취향으로 변경해보세요.</p>
-            <span class="default-badge scalable-text">기본 옵션</span>
+            <span id="detail-temp-badge" class="temp-badge scalable-text">아이스</span>
+            
+            <h2 id="detail-name" class="scalable-text" style="font-size: 28px; color: var(--primary-brown); margin-top: 5px;">메뉴명 <span class="badge">BEST</span></h2>
+            
+            <p id="detail-desc" class="scalable-text" style="color: #555; margin-top: 10px; line-height: 1.5; font-size: 14px;">메뉴 설명이 들어갑니다.</p>
           </div>
         </div>
 
@@ -170,7 +172,7 @@
         </div>
         <div class="detail-action">
           <span id="detail-total-price" class="scalable-text" style="font-size: 22px; font-weight: bold; margin-right: 15px;">₩ 0</span>
-          <button class="add-btn scalable-text" onclick="addToCart()">장바구니 담기</button>
+          <button class="add-btn scalable-text" onclick="addToCart()">장바구니 추가</button>
         </div>
       </div>
     </div>

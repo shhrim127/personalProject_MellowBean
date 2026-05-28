@@ -10,6 +10,17 @@ let detailSelectedSize = { name: '작은', price: 0 };
 let detailFreeOptions = new Set();
 let detailPaidOptions = [];
 
+// 메뉴별 다이나믹 설명 데이터베이스
+const menuDescriptions = {
+  '아메리카노': '진한 에스프레소의 풍미를 느낄 수 있는 깔끔한 커피',
+  '카페라떼': '에스프레소에 부드러운 우유를 더해 고소한 커피',
+  '바닐라라떼': '부드러운 우유와 에스프레소에 바닐라 시럽을 더해 달콤하고 향긋한 라떼',
+  '카라멜마끼아또': '카라멜의 달콤함과 부드러운 우유 거품이 어우러진 커피',
+  '크림콜드브루': '콜드브루 위에 달콤하고 부드러운 크림이 올라간 커피',
+  '치즈 케이크': '입 안 가득 퍼지는 진한 치즈의 풍미가 매력적인 케이크',
+  '망고 스무디': '달콤한 망고를 듬뿍 갈아 만든 시원한 스무디'
+};
+
 function hideAllScreens() {
   document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
 }
@@ -50,7 +61,7 @@ function toggleFontSize() {
   document.documentElement.style.setProperty('--font-scale', scaleValues[fontStep]);
 }
 
-// === 메뉴별 옵션 보이기/숨기기 스마트 로직 ===
+// === 메뉴 클릭 시 상세창 열기 (에러 완벽 수정) ===
 function openDetail(name, price) {
   detailItemName = name;
   detailBasePrice = price;
@@ -59,50 +70,59 @@ function openDetail(name, price) {
   detailFreeOptions.clear();
   detailPaidOptions = [];
   
-  document.getElementById('detail-name').innerText = name;
+  // 1. 메뉴명 및 설명 텍스트 넣기
+  document.getElementById('detail-name').innerHTML = name + ' <span class="badge">BEST</span>';
+  document.getElementById('detail-desc').innerText = menuDescriptions[name] || '선택하신 메뉴를 나만의 취향으로 변경해보세요.';
   
-  if(currentCategory === 'snack') {
-    document.getElementById('detail-options-area').style.display = 'none';
+  // 2. 핫/아이스 뱃지 설정
+  const tempBadge = document.getElementById('detail-temp-badge');
+  if (currentCategory !== 'snack') {
+    tempBadge.style.display = 'inline-block';
+    tempBadge.innerText = currentTemp;
+    tempBadge.className = 'temp-badge scalable-text ' + (currentTemp === '핫' ? 'hot' : 'ice');
   } else {
-    document.getElementById('detail-options-area').style.display = 'block';
+    tempBadge.style.display = 'none'; // 간식은 온도 표시 없음
+  }
+
+  // 3. 옵션 영역 숨기기/보이기 로직
+  const optionsArea = document.getElementById('detail-options-area');
+  if(currentCategory === 'snack') {
+    optionsArea.style.display = 'none';
+  } else {
+    optionsArea.style.display = 'block';
     
-    // 버튼 스타일 리셋
+    // 버튼 초기화
     document.querySelectorAll('.free-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
     document.querySelectorAll('.paid-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
     document.querySelectorAll('.size-box').forEach(b => b.classList.remove('active-opt'));
-    document.querySelector('.size-box').classList.add('active-opt'); // 사이즈는 무조건 '작은'부터
+    
+    // 사이즈 기본 선택 방어코드
+    const firstSizeBox = document.querySelector('.size-box');
+    if (firstSizeBox) firstSizeBox.classList.add('active-opt');
 
-    // --- 유료옵션(샷, 두유) 필터링 로직 ---
-    const milkDrinks = ['카페라떼', '바닐라라떼', '카라멜마끼아또', '크림콜드브루']; // 우유가 들어가는 메뉴 리스트
+    // 4. 유료옵션(샷, 두유) 필터링
+    const milkDrinks = ['카페라떼', '바닐라라떼', '카라멜마끼아또', '크림콜드브루']; 
     const optShot = document.getElementById('opt-shot');
     const optMilk = document.getElementById('opt-milk');
     const paidTitle = document.getElementById('paid-options-title');
     const paidGrid = document.getElementById('paid-options-grid');
 
-    // 1. 기본적으로 다 보이게 세팅
-    optShot.style.display = 'flex';
-    optMilk.style.display = 'flex';
-    paidTitle.style.display = 'block';
-    paidGrid.style.display = 'grid';
-    paidGrid.style.gridTemplateColumns = 'repeat(2, 1fr)'; // 2칸 배열
+    if (optShot && optMilk && paidTitle && paidGrid) {
+      optShot.style.display = 'flex';
+      optMilk.style.display = 'flex';
+      paidTitle.style.display = 'block';
+      paidGrid.style.display = 'grid';
+      paidGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
 
-    // 2. 커피가 아니면(차, 주스) '샷 추가' 숨기기
-    if (currentCategory !== 'coffee') {
-      optShot.style.display = 'none';
-    }
+      if (currentCategory !== 'coffee') optShot.style.display = 'none';
+      if (!milkDrinks.includes(name)) optMilk.style.display = 'none';
 
-    // 3. 우유가 들어가는 음료가 아니면 '두유 변경' 숨기기
-    if (!milkDrinks.includes(name)) {
-      optMilk.style.display = 'none';
-    }
-
-    // 4. 둘 다 숨겨졌으면 '유료 옵션' 타이틀과 영역 자체를 숨김
-    if (optShot.style.display === 'none' && optMilk.style.display === 'none') {
-      paidTitle.style.display = 'none';
-      paidGrid.style.display = 'none';
-    } else if (optShot.style.display === 'none' || optMilk.style.display === 'none') {
-      // 5. 하나만 보일 땐 예쁘게 가운데 꽉 차게 1칸으로 변경
-      paidGrid.style.gridTemplateColumns = '1fr';
+      if (optShot.style.display === 'none' && optMilk.style.display === 'none') {
+        paidTitle.style.display = 'none';
+        paidGrid.style.display = 'none';
+      } else if (optShot.style.display === 'none' || optMilk.style.display === 'none') {
+        paidGrid.style.gridTemplateColumns = '1fr'; // 한개면 꽉 차게
+      }
     }
   }
   
@@ -209,7 +229,6 @@ function addToCart() {
 
 function changeQty(index, delta) {
   cart[index].qty += delta;
-  
   if (cart[index].qty <= 0) {
     cart.splice(index, 1); 
   }
