@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mellow Bean Cafe</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="root">
+    
+    <div id="home-screen" class="screen">
+      <header class="header">
+        <div class="home-btn">
+          <span>🏠</span><p>처음으로</p>
+        </div>
+        <div class="lang-btn">🌐 한국어 ⌄</div>
+      </header>
+      <main class="main-home" onclick="goToMenu()">
+        <div class="logo-area">
+          <div class="bean-icon">☕</div>
+          <h1 class="logo-title">Mellow Bean Cafe</h1>
+          <p class="subtitle">오늘도, 당신의 하루가 더 따뜻해지길</p>
+        </div>
+        <div class="touch-text">
+          <h2>화면을 터치하세요</h2>
+        </div>
+      </main>
+      <footer class="footer-home">
+        <button class="bottom-btn"><span class="icon">🎙️</span>음성 모드</button>
+        <button class="bottom-btn"><span class="icon">🎧</span>직원 호출</button>
+      </footer>
+    </div>
+
+    <div id="menu-screen" class="screen hidden">
+      <header class="header">
+        <div class="home-btn" onclick="goToHome()">
+          <span>🏠</span><p>처음으로</p>
+        </div>
+        <div class="logo-title-small">Mellow Bean Cafe</div>
+        <div class="lang-btn">🌐 한국어 ⌄</div>
+      </header>
+
+      <nav class="category-nav">
+        <div class="category-btn active">☕ 커피</div>
+        <div class="category-btn">🍵 차</div>
+        <div class="category-btn">🥤 주스</div>
+        <div class="category-btn">🍰 간식</div>
+      </nav>
+
+      <div class="main-content">
+        <div class="temp-toggle">
+          <div class="temp-btn">핫</div>
+          <div class="temp-btn active-temp">아이스</div>
+        </div>
+        
+        <div class="menu-grid">
+          <div class="menu-card" onclick="openModal('아메리카노', '4,000')">
+            <div class="img-placeholder"></div>
+            <div class="menu-info"><p class="menu-name">아메리카노</p><p class="menu-price">₩ 4,000</p></div>
+          </div>
+          <div class="menu-card" onclick="openModal('카페라떼', '4,800')">
+            <div class="img-placeholder"></div>
+            <div class="menu-info"><p class="menu-name">카페라떼</p><p class="menu-price">₩ 4,800</p></div>
+          </div>
+          <div class="menu-card" onclick="openModal('바닐라라떼', '5,300')">
+            <div class="img-placeholder"></div>
+            <div class="menu-info"><p class="menu-name">바닐라라떼</p><p class="menu-price">₩ 5,300</p></div>
+          </div>
+          <div class="menu-card" onclick="openModal('카라멜마끼아또', '5,500')">
+            <div class="img-placeholder"></div>
+            <div class="menu-info"><p class="menu-name">카라멜마끼아또</p><p class="menu-price">₩ 5,500</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-section">
+        <div class="cart-header">
+          <span>🛍️ 주문내역</span>
+          <button class="clear-btn">전체삭제</button>
+        </div>
+        <div class="cart-empty">주문하신 메뉴가 없습니다.</div>
+        <div class="summary-grid">
+          <div class="summary-row"><span>상품개수</span><span>0개</span></div>
+          <div class="summary-row"><span>합계금액</span><span>₩ 0</span></div>
+          <div class="summary-row discount"><span>할인금액</span><span>- ₩ 0</span></div>
+          <div class="summary-row total"><span>결제예정금액</span><span>₩ 0</span></div>
+        </div>
+        <button class="checkout-btn">
+          💳 결제하기 <span class="checkout-sub">카드 / 간편결제</span>
+        </button>
+      </div>
+
+      <div class="banner">
+        <span>🥤 텀블러를 사용하시면 </span><strong>300원 할인 혜택!</strong><span class="arrow">&gt;</span>
+      </div>
+
+      <footer class="bottom-bar">
+        <button class="action-btn">🎙️ 음성 모드</button><span class="divider">|</span>
+        <button class="action-btn">가 글자 크게</button><span class="divider">|</span>
+        <button class="action-btn">🎧 직원 호출</button>
+      </footer>
+    </div>
+
+    <div id="option-modal" class="overlay hidden">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="product-info">
+            <div class="img-placeholder-large"></div>
+            <div>
+              <h2 id="modal-name" class="product-name">아메리카노</h2>
+              <p id="modal-price" class="product-price">₩ 4,000</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-body">
+          <h3 class="section-title">옵션 선택</h3>
+          <div class="option-group">
+            <p class="option-label">당도 선택</p>
+            <div class="grid2">
+              <button class="option-btn">안 달게</button>
+              <button class="option-btn">덜 달게</button>
+              <button class="option-btn">달게</button>
+              <button class="option-btn">많이 달게</button>
+            </div>
+          </div>
+          <div class="option-group">
+            <p class="option-label">우유 변경</p>
+            <div class="toggle-container">
+              <div class="toggle-item">일반 우유</div>
+              <div class="toggle-item active-toggle">두유로 변경</div>
+            </div>
+          </div>
+          <div class="action-group">
+            <button class="confirm-btn" onclick="closeModal()">선택 완료</button>
+            <button class="cancel-btn" onclick="closeModal()">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
