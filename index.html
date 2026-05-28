@@ -31,7 +31,7 @@
       </main>
       <footer class="footer-home">
         <button class="bottom-btn scalable-text" onclick="openVoiceMode()"><span class="icon">🎙️</span>음성 모드</button>
-        <button class="bottom-btn scalable-text"><span class="icon">🎧</span>직원 호출</button>
+        <button class="bottom-btn scalable-text" onclick="alert('직원을 호출했습니다. 잠시만 기다려주세요.')"><span class="icon">🎧</span>직원 호출</button>
       </footer>
     </div>
 
@@ -50,9 +50,9 @@
       </nav>
 
       <div class="main-content">
-        <div class="temp-toggle">
-          <div class="temp-btn scalable-text">핫</div>
-          <div class="temp-btn active-temp scalable-text">아이스</div>
+        <div id="temp-toggle-area" class="temp-toggle">
+          <div class="temp-btn scalable-text" onclick="setTemp('핫', this)">핫</div>
+          <div class="temp-btn active-temp scalable-text" onclick="setTemp('아이스', this)">아이스</div>
         </div>
         
         <div id="list-coffee" class="menu-grid">
@@ -91,12 +91,14 @@
           <button class="clear-btn scalable-text" onclick="clearCart()">전체삭제</button>
         </div>
         <div id="cart-empty" class="cart-empty scalable-text">주문하신 메뉴가 없습니다.</div>
-        <div id="cart-list" class="cart-list"></div> <div class="summary-grid">
+        <div id="cart-list" class="cart-list"></div>
+        
+        <div class="summary-grid">
           <div class="summary-row"><span class="scalable-text">상품개수</span><span id="total-count" class="scalable-text">0개</span></div>
           <div class="summary-row"><span class="scalable-text">합계금액</span><span id="total-price" class="scalable-text">₩ 0</span></div>
           <div class="summary-row total"><span class="scalable-text">결제예정금액</span><span id="final-price" class="scalable-text">₩ 0</span></div>
         </div>
-        <button class="checkout-btn">
+        <button class="checkout-btn" onclick="goToPaymentMethod()">
           <span class="scalable-text">💳 결제하기</span> <span class="checkout-sub">카드 / 간편결제</span>
         </button>
       </div>
@@ -104,7 +106,7 @@
       <footer class="bottom-bar">
         <button class="action-btn scalable-text" onclick="openVoiceMode()">🎙️ 음성 모드</button><span class="divider">|</span>
         <button class="action-btn scalable-text" onclick="toggleFontSize()">가 글자 크게</button><span class="divider">|</span>
-        <button class="action-btn scalable-text">🎧 직원 호출</button>
+        <button class="action-btn scalable-text" onclick="alert('직원을 호출했습니다.')">🎧 직원 호출</button>
       </footer>
     </div>
 
@@ -121,15 +123,26 @@
         </div>
         <div class="modal-body">
           <h3 class="section-title scalable-text">옵션 선택</h3>
-          <div class="option-group">
-            <p class="option-label scalable-text">당도 선택</p>
-            <div class="grid2">
-              <button class="option-btn scalable-text">안 달게</button>
-              <button class="option-btn scalable-text">덜 달게</button>
-              <button class="option-btn scalable-text">달게</button>
-              <button class="option-btn scalable-text">많이 달게</button>
+          
+          <div id="modal-options-area">
+            <div class="option-group">
+              <p class="option-label scalable-text">당도 선택</p>
+              <div class="grid2">
+                <button class="option-btn scalable-text" onclick="setOption('sweetness', '안 달게', this)">안 달게</button>
+                <button class="option-btn scalable-text" onclick="setOption('sweetness', '덜 달게', this)">덜 달게</button>
+                <button class="option-btn scalable-text active-option" onclick="setOption('sweetness', '기본(달게)', this)">기본(달게)</button>
+                <button class="option-btn scalable-text" onclick="setOption('sweetness', '많이 달게', this)">많이 달게</button>
+              </div>
+            </div>
+            <div class="option-group">
+              <p class="option-label scalable-text">우유 변경</p>
+              <div class="toggle-container">
+                <div class="toggle-item active-toggle scalable-text" onclick="setOption('milk', '일반 우유', this)">일반 우유</div>
+                <div class="toggle-item scalable-text" onclick="setOption('milk', '두유로 변경', this)">두유로 변경</div>
+              </div>
             </div>
           </div>
+
           <div class="action-group">
             <button class="confirm-btn scalable-text" onclick="addToCart()">선택 완료</button>
             <button class="cancel-btn scalable-text" onclick="closeModal()">취소</button>
@@ -138,10 +151,44 @@
       </div>
     </div>
 
-    <div id="voice-screen" class="screen hidden" style="background-color: #1a1a1a;">
-      <div class="voice-header">
-        <span>|||\|</span> 음성 안내 접근성 모드
+    <div id="payment-method-screen" class="screen hidden">
+      <header class="header">
+        <div class="home-btn" onclick="goToMenu('매장')"><span>🔙</span><p>뒤로가기</p></div>
+        <div class="logo-title-small">결제수단 선택</div>
+        <div style="width: 60px;"></div> </header>
+      <div class="payment-body">
+        <h2 class="payment-title scalable-text">결제하실 수단을<br>선택해 주세요</h2>
+        <div class="payment-grid">
+          <button class="pay-btn scalable-text" onclick="processPayment('card')">💳 신용/체크카드</button>
+          <button class="pay-btn scalable-text" onclick="processPayment('kakao')">📱 카카오페이</button>
+          <button class="pay-btn scalable-text" onclick="alert('카운터를 이용해주세요.')">💵 현금 결제</button>
+          <button class="pay-btn scalable-text" onclick="alert('바코드를 스캐너에 인식해주세요.')">🎫 쿠폰 사용</button>
+        </div>
       </div>
+    </div>
+
+    <div id="processing-screen" class="screen hidden">
+      <div class="processing-content">
+        <div id="process-icon" class="process-icon">💳</div>
+        <h2 id="process-text" class="scalable-text">IC카드를 삽입해주세요</h2>
+        <p class="scalable-text" style="color: #666; margin-top: 10px;">결제가 완료될 때까지 카드를 빼지 마세요.</p>
+      </div>
+    </div>
+
+    <div id="success-screen" class="screen hidden" style="background-color: var(--primary-brown);">
+      <div class="success-content">
+        <div class="receipt-icon">🧾</div>
+        <h2 class="scalable-text" style="color: white; margin-bottom: 20px;">주문이 완료되었습니다<br>감사합니다!</h2>
+        <div class="order-number-box">
+          <p class="scalable-text">주문번호</p>
+          <h1 id="order-number" class="scalable-text" style="font-size: 60px; color: var(--primary-brown);">101</h1>
+        </div>
+        <p class="scalable-text" style="color: #ddd; margin-top: 30px;">잠시 후 처음 화면으로 돌아갑니다...</p>
+      </div>
+    </div>
+
+    <div id="voice-screen" class="screen hidden" style="background-color: #1a1a1a;">
+      <div class="voice-header"><span>|||\|</span> 음성 안내 접근성 모드</div>
       <div class="voice-list">
         <div class="voice-item">1. 음료 주문</div>
         <div class="voice-item">2. 메뉴 검색</div>
@@ -149,9 +196,7 @@
         <div class="voice-item">4. 설정</div>
         <div class="voice-item" onclick="closeVoiceMode()">5. 종료</div>
       </div>
-      <div class="voice-footer">
-        키패드 숫자를 눌러<br>선택하세요.
-      </div>
+      <div class="voice-footer">키패드 숫자를 눌러<br>선택하세요.</div>
     </div>
 
   </div>
