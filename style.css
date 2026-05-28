@@ -64,7 +64,6 @@ body { background-color: #e5e5e5; display: flex; justify-content: center; align-
 .cart-item-options { color: #666; --base-size: 11px; margin-top: 2px; display: block; }
 .cart-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 
-/* 수량 조절 버튼 UI */
 .qty-control { display: flex; align-items: center; background: var(--white); border: 1px solid #ccc; border-radius: 12px; overflow: hidden; }
 .qty-control button { background: none; border: none; width: 24px; height: 24px; font-size: 16px; font-weight: bold; color: var(--primary-brown); cursor: pointer; }
 .qty-control span { width: 20px; text-align: center; font-weight: bold; font-size: 13px; }
@@ -78,12 +77,11 @@ body { background-color: #e5e5e5; display: flex; justify-content: center; align-
 .action-btn { background: none; border: none; font-weight: bold; color: var(--text-main); display: flex; gap: 6px; cursor: pointer; --base-size: 16px; padding: 10px;}
 .divider { color: #ccc; align-self: center; }
 
-/* === 3. 상세 옵션 선택 화면 === */
+/* === 상세 옵션 선택 화면 === */
 .detail-body { flex: 1; padding: 20px; overflow-y: auto; background: white; margin: 16px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
 .product-hero { display: flex; align-items: center; gap: 20px; margin-bottom: 30px; }
 .hero-img-placeholder { width: 100px; height: 130px; background: #ddd; border-radius: 12px; flex-shrink: 0; }
 
-/* 핫 아이스 뱃지 */
 .temp-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; color: white; margin-bottom: 5px; }
 .temp-badge.hot { background-color: #d9534f; }
 .temp-badge.ice { background-color: #0275d8; }
@@ -91,12 +89,10 @@ body { background-color: #e5e5e5; display: flex; justify-content: center; align-
 .badge { background: #d4a373; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; vertical-align: middle; margin-left: 5px;}
 .option-section-title { --base-size: 18px; color: var(--primary-brown); margin: 25px 0 10px 0; border-bottom: 2px solid var(--bg-color); padding-bottom: 8px; }
 
-/* 옵션 버튼 공통 */
 .opt-box { background: var(--white); border: 1px solid #e0d5cb; border-radius: 12px; color: var(--primary-brown); cursor: pointer; font-weight: bold; transition: 0.2s; }
 .opt-box.active-opt { border-color: var(--primary-brown); background-color: var(--bg-color); box-shadow: inset 0 0 0 1px var(--primary-brown); }
 .flex-center { display: flex; align-items: center; gap: 8px; }
 
-/* 그리드 레이아웃 */
 .free-options-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .free-options-grid .opt-box { padding: 15px 5px; --base-size: 13px; text-align: center; }
 .free-options-grid .opt-box span { font-size: 20px; display: block; margin-bottom: 5px; }
@@ -111,7 +107,6 @@ body { background-color: #e5e5e5; display: flex; justify-content: center; align-
 .price-add { font-size: 12px; color: #666; font-weight: normal; }
 .active-opt .price-add { color: var(--primary-brown); font-weight: bold; }
 
-/* 상세화면 하단 바 */
 .detail-bottom-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: var(--white); border-top: 1px solid #eee; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
 .detail-summary { display: flex; align-items: center; gap: 10px; }
 .small-img { width: 40px; height: 50px; background: #ddd; border-radius: 6px; }

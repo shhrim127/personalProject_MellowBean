@@ -3,6 +3,7 @@ let currentCategory = 'coffee';
 let currentTemp = '아이스'; 
 let cart = []; 
 let fontStep = 0; 
+let previousScreenId = 'home-screen'; // 직원 호출 후 돌아갈 화면 기억용
 
 let detailBasePrice = 0;
 let detailItemName = '';
@@ -10,7 +11,6 @@ let detailSelectedSize = { name: '작은', price: 0 };
 let detailFreeOptions = new Set();
 let detailPaidOptions = [];
 
-// 메뉴별 다이나믹 설명 데이터베이스
 const menuDescriptions = {
   '아메리카노': '진한 에스프레소의 풍미를 느낄 수 있는 깔끔한 커피',
   '카페라떼': '에스프레소에 부드러운 우유를 더해 고소한 커피',
@@ -61,7 +61,7 @@ function toggleFontSize() {
   document.documentElement.style.setProperty('--font-scale', scaleValues[fontStep]);
 }
 
-// === 메뉴 클릭 시 상세창 열기 (에러 완벽 수정) ===
+// === 메뉴 상세 페이지 로직 ===
 function openDetail(name, price) {
   detailItemName = name;
   detailBasePrice = price;
@@ -70,37 +70,31 @@ function openDetail(name, price) {
   detailFreeOptions.clear();
   detailPaidOptions = [];
   
-  // 1. 메뉴명 및 설명 텍스트 넣기
   document.getElementById('detail-name').innerHTML = name + ' <span class="badge">BEST</span>';
   document.getElementById('detail-desc').innerText = menuDescriptions[name] || '선택하신 메뉴를 나만의 취향으로 변경해보세요.';
   
-  // 2. 핫/아이스 뱃지 설정
   const tempBadge = document.getElementById('detail-temp-badge');
   if (currentCategory !== 'snack') {
     tempBadge.style.display = 'inline-block';
     tempBadge.innerText = currentTemp;
     tempBadge.className = 'temp-badge scalable-text ' + (currentTemp === '핫' ? 'hot' : 'ice');
   } else {
-    tempBadge.style.display = 'none'; // 간식은 온도 표시 없음
+    tempBadge.style.display = 'none'; 
   }
 
-  // 3. 옵션 영역 숨기기/보이기 로직
   const optionsArea = document.getElementById('detail-options-area');
   if(currentCategory === 'snack') {
     optionsArea.style.display = 'none';
   } else {
     optionsArea.style.display = 'block';
     
-    // 버튼 초기화
     document.querySelectorAll('.free-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
     document.querySelectorAll('.paid-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
     document.querySelectorAll('.size-box').forEach(b => b.classList.remove('active-opt'));
     
-    // 사이즈 기본 선택 방어코드
     const firstSizeBox = document.querySelector('.size-box');
     if (firstSizeBox) firstSizeBox.classList.add('active-opt');
 
-    // 4. 유료옵션(샷, 두유) 필터링
     const milkDrinks = ['카페라떼', '바닐라라떼', '카라멜마끼아또', '크림콜드브루']; 
     const optShot = document.getElementById('opt-shot');
     const optMilk = document.getElementById('opt-milk');
@@ -121,7 +115,7 @@ function openDetail(name, price) {
         paidTitle.style.display = 'none';
         paidGrid.style.display = 'none';
       } else if (optShot.style.display === 'none' || optMilk.style.display === 'none') {
-        paidGrid.style.gridTemplateColumns = '1fr'; // 한개면 꽉 차게
+        paidGrid.style.gridTemplateColumns = '1fr'; 
       }
     }
   }
@@ -284,6 +278,7 @@ function updateCartUI() {
   document.getElementById('final-price').innerText = '₩ ' + totalPrice.toLocaleString();
 }
 
+// === 결제 화면 ===
 function goToPaymentMethod() {
   if(cart.length === 0) {
     alert('장바구니가 비어있습니다. 메뉴를 선택해주세요.');
@@ -313,10 +308,24 @@ function showSuccessScreen() {
   hideAllScreens();
   document.getElementById('success-screen').classList.remove('hidden');
   document.getElementById('order-number').innerText = Math.floor(Math.random() * 900) + 100;
-
   setTimeout(() => { goToHome(); }, 4000);
 }
 
+// === [NEW] 직원 호출 관련 로직 ===
+
+// 1. 일반 직원 호출
+function callStaff(screenId) {
+  previousScreenId = screenId; // 현재 화면 기억 (나중에 취소 누르면 돌아가야 함)
+  hideAllScreens();
+  document.getElementById('staff-call-screen').classList.remove('hidden');
+}
+
+function cancelStaffCall() {
+  hideAllScreens();
+  document.getElementById(previousScreenId).classList.remove('hidden'); // 아까 있던 화면으로 복귀
+}
+
+// 2. 음성 모드 전환 및 호출
 function openVoiceMode() {
   hideAllScreens();
   document.getElementById('voice-screen').classList.remove('hidden');
@@ -326,3 +335,34 @@ function closeVoiceMode() {
   hideAllScreens();
   document.getElementById('home-screen').classList.remove('hidden');
 }
+
+function callVoiceStaff() {
+  hideAllScreens();
+  document.getElementById('voice-staff-call-screen').classList.remove('hidden');
+}
+
+function cancelVoiceStaffCall() {
+  hideAllScreens();
+  document.getElementById('voice-screen').classList.remove('hidden'); // 다시 음성모드 메인으로 복귀
+}
+
+// === [NEW] 음성 모드 키보드(단축키) 이벤트 리스너 ===
+document.addEventListener('keydown', function(event) {
+  const voiceScreen = document.getElementById('voice-screen');
+  const voiceStaffScreen = document.getElementById('voice-staff-call-screen');
+
+  // 음성 안내 메인 화면이 켜져 있을 때
+  if (!voiceScreen.classList.contains('hidden')) {
+    if (event.key === '3') {
+      callVoiceStaff();
+    } else if (event.key === '5') {
+      closeVoiceMode();
+    }
+  } 
+  // 직원이 오고 있습니다 화면이 켜져 있을 때
+  else if (!voiceStaffScreen.classList.contains('hidden')) {
+    if (event.key === '0') {
+      cancelVoiceStaffCall();
+    }
+  }
+});
