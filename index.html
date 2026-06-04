@@ -54,6 +54,7 @@
           <div class="temp-btn active-temp scalable-text" onclick="setTemp('차갑게', this)">차갑게</div>
         </div>
         
+        <!-- 커피 -->
         <div id="list-coffee" class="menu-grid">
           <div class="menu-card" id="card-americano" onclick="openDetail('아메리카노', 4000, './images/iceAmericano.png')">
             <div class="img-box"><img id="img-americano" src="./images/iceAmericano.png" alt="아메리카노"></div>
@@ -77,6 +78,7 @@
           </div>
         </div>
         
+        <!-- 차 -->
         <div id="list-tea" class="menu-grid hidden">
           <div class="menu-card" onclick="openDetail('캐모마일 차', 4500, './images/chamomileTea.png')">
             <div class="img-box"><img src="./images/chamomileTea.png" alt="캐모마일 차"></div>
@@ -96,6 +98,7 @@
           </div>
         </div>
         
+        <!-- 주스 -->
         <div id="list-juice" class="menu-grid hidden">
           <div class="menu-card" onclick="openDetail('오렌지 주스', 5000, './images/orange.png')">
             <div class="img-box"><img src="./images/orange.png" alt="오렌지 주스"></div>
@@ -109,12 +112,14 @@
             <div class="img-box"><img src="./images/strawberryBanana.png" alt="딸기 바나나 주스"></div>
             <div class="menu-info"><p class="menu-name scalable-text">딸기 바나나 주스</p><p class="menu-price scalable-text">₩ 5,800</p></div>
           </div>
-          <div class="menu-card" onclick="openDetail('망고 스무디', 6000, '')">
-            <div class="img-placeholder"></div>
+          <!-- 망고 스무디 변경됨 -->
+          <div class="menu-card" onclick="openDetail('망고 스무디', 6000, './images/mangoSmoothie.png')">
+            <div class="img-box"><img src="./images/mangoSmoothie.png" alt="망고 스무디"></div>
             <div class="menu-info"><p class="menu-name scalable-text">망고 스무디</p><p class="menu-price scalable-text">₩ 6,000</p></div>
           </div>
         </div>
         
+        <!-- 간식 -->
         <div id="list-snack" class="menu-grid hidden">
           <div class="menu-card" onclick="openDetail('치즈 케이크', 6500, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">치즈 케이크</p><p class="menu-price scalable-text">₩ 6,500</p></div></div>
           <div class="menu-card" onclick="openDetail('초코 머핀', 3500, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">초코 머핀</p><p class="menu-price scalable-text">₩ 3,500</p></div></div>
@@ -148,9 +153,10 @@
       </footer>
     </div>
 
+    <!-- 3. 상세 옵션 선택 화면 -->
     <div id="detail-screen" class="screen hidden" style="background-color: #faf6f2;">
       <header class="header">
-        <div class="home-btn" onclick="closeDetail()" style="border-radius: 50%; padding: 12px 16px; font-size: 16px;">&lt;</div>
+        <div class="home-btn" onclick="closeDetail()" style="border-radius: 50%; padding: 12px 18px; font-size: 22px; font-weight: bold;">&lt;</div>
         <div class="logo-title-small" style="text-align: center;">Mellow Bean Cafe<br><span style="font-size: 12px; color: #666; font-family: 'Noto Sans KR', sans-serif;">오늘도, 당신의 하루가 더 따뜻해지길</span></div>
         <div class="lang-btn">🌐 한국어 ⌄</div>
       </header>
@@ -218,9 +224,10 @@
       </div>
     </div>
 
+    <!-- 4. 결제 관련 화면 -->
     <div id="payment-method-screen" class="screen hidden">
       <header class="header">
-        <div class="home-btn" onclick="goToMenu('매장')" style="border-radius: 50%; padding: 12px 16px;">&lt;</div>
+        <div class="home-btn" onclick="goToMenu('매장')" style="border-radius: 50%; padding: 12px 18px; font-size: 22px; font-weight: bold;">&lt;</div>
         <div class="logo-title-small">결제수단 선택</div>
         <div style="width: 60px;"></div>
       </header>
@@ -255,6 +262,7 @@
       </div>
     </div>
 
+    <!-- 5. 직원 호출 팝업 -->
     <div id="staff-call-screen" class="screen hidden" style="background-color: var(--bg-color);">
       <div class="processing-content">
         <div class="process-icon" style="font-size: 80px; animation: none; margin-bottom: 30px;">🎧</div>
@@ -267,6 +275,7 @@
       </div>
     </div>
 
+    <!-- 6. 음성 안내 모드 -->
     <div id="voice-screen" class="screen hidden" style="background-color: #1a1a1a;">
       <div class="voice-header"><span>|||\|</span> 음성 안내 접근성 모드</div>
       <div class="voice-list">
