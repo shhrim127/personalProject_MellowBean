@@ -1,25 +1,26 @@
 let orderType = ''; 
 let currentCategory = 'coffee'; 
-let currentTemp = '아이스'; 
+let currentTemp = '차갑게'; // 기본값을 차갑게로 세팅
 let cart = []; 
 let fontStep = 0; 
 let previousScreenId = 'home-screen'; 
 
 let detailBasePrice = 0;
 let detailItemName = '';
-let detailItemImg = ''; // 현재 상세창에 띄운 이미지 경로 저장
+let detailItemImg = ''; 
 let detailSelectedSize = { name: '작은', price: 0 };
 let detailFreeOptions = new Set();
 let detailPaidOptions = [];
 
+// 메뉴 이름 변경에 맞춰 설명 리스트 업데이트
 const menuDescriptions = {
   '아메리카노': '진한 에스프레소의 풍미를 느낄 수 있는 깔끔한 커피',
   '카페라떼': '에스프레소에 부드러운 우유를 더해 고소한 커피',
   '바닐라라떼': '부드러운 우유와 에스프레소에 바닐라 시럽을 더해 달콤하고 향긋한 라떼',
-  '카라멜마끼아또': '카라멜의 달콤함과 부드러운 우유 거품이 어우러진 커피',
+  '카라멜 라떼': '카라멜의 달콤함과 부드러운 우유 거품이 어우러진 커피',
   '크림콜드브루': '콜드브루 위에 달콤하고 부드러운 크림이 올라간 커피',
-  '캐모마일 티': '마음을 편안하게 해주는 은은한 사과향의 허브티',
-  '얼그레이 티': '진한 홍차에 베르가못 향이 어우러진 클래식 티',
+  '캐모마일 차': '마음을 편안하게 해주는 은은한 사과향의 허브차',
+  '얼그레이 홍차': '진한 홍차에 향긋한 과일 향이 어우러진 차',
   '유자차': '달콤 쌉싸름한 유자의 맛이 살아있는 전통차',
   '녹차': '깔끔하고 깊은 맛을 내는 부드러운 녹차',
   '오렌지 주스': '신선한 오렌지를 그대로 짠 상큼한 과일 주스',
@@ -61,6 +62,19 @@ function setTemp(temp, element) {
   currentTemp = temp;
   document.querySelectorAll('.temp-btn').forEach(btn => btn.classList.remove('active-temp'));
   element.classList.add('active-temp');
+
+  // 아메리카노 이미지 다이나믹 변경 로직 (따뜻하게 / 차갑게)
+  const americanoImg = document.getElementById('img-americano');
+  const americanoCard = document.getElementById('card-americano');
+  if(americanoImg && americanoCard) {
+    if(temp === '따뜻하게') {
+      americanoImg.src = './images/hotAmericano.png';
+      americanoCard.setAttribute('onclick', "openDetail('아메리카노', 4000, './images/hotAmericano.png')");
+    } else {
+      americanoImg.src = './images/iceAmericano.png';
+      americanoCard.setAttribute('onclick', "openDetail('아메리카노', 4000, './images/iceAmericano.png')");
+    }
+  }
 }
 
 function toggleFontSize() {
@@ -69,12 +83,11 @@ function toggleFontSize() {
   document.documentElement.style.setProperty('--font-scale', scaleValues[fontStep]);
 }
 
-// === 상세 화면 (이미지 처리 추가) ===
-// HTML에서 openDetail 호출 시 3번째 파라미터로 imgSrc를 받음
+// === 상세 화면 ===
 function openDetail(name, price, imgSrc) {
   detailItemName = name;
   detailBasePrice = price;
-  detailItemImg = imgSrc || ''; // 이미지가 없으면 빈 문자열
+  detailItemImg = imgSrc || ''; 
   
   detailSelectedSize = { name: '작은', price: 0 };
   detailFreeOptions.clear();
@@ -83,7 +96,6 @@ function openDetail(name, price, imgSrc) {
   document.getElementById('detail-name').innerHTML = name + ' <span class="badge">BEST</span>';
   document.getElementById('detail-desc').innerText = menuDescriptions[name] || '선택하신 메뉴를 나만의 취향으로 변경해보세요.';
   
-  // 큰 이미지 교체
   const bigImgBox = document.getElementById('detail-img-box');
   if (detailItemImg) {
     bigImgBox.innerHTML = `<img src="${detailItemImg}" alt="${name}">`;
@@ -91,11 +103,12 @@ function openDetail(name, price, imgSrc) {
     bigImgBox.innerHTML = `<div class="hero-img-placeholder"></div>`;
   }
 
+  // 따뜻하게/차갑게 뱃지
   const tempBadge = document.getElementById('detail-temp-badge');
   if (currentCategory !== 'snack') {
     tempBadge.style.display = 'inline-block';
     tempBadge.innerText = currentTemp;
-    tempBadge.className = 'temp-badge scalable-text ' + (currentTemp === '핫' ? 'hot' : 'ice');
+    tempBadge.className = 'temp-badge scalable-text ' + (currentTemp === '따뜻하게' ? 'hot' : 'ice');
   } else {
     tempBadge.style.display = 'none'; 
   }
@@ -113,7 +126,8 @@ function openDetail(name, price, imgSrc) {
     const firstSizeBox = document.querySelector('.size-box');
     if (firstSizeBox) firstSizeBox.classList.add('active-opt');
 
-    const milkDrinks = ['카페라떼', '바닐라라떼', '카라멜마끼아또', '크림콜드브루']; 
+    // 우유 변경 메뉴 리스트 (카라멜 라떼로 이름 변경)
+    const milkDrinks = ['카페라떼', '바닐라라떼', '카라멜 라떼', '크림콜드브루']; 
     const optShot = document.getElementById('opt-shot');
     const optMilk = document.getElementById('opt-milk');
     const paidTitle = document.getElementById('paid-options-title');
@@ -192,7 +206,6 @@ function updateDetailBottomBar() {
 
   document.getElementById('detail-total-price').innerText = '₩ ' + total.toLocaleString();
 
-  // 하단 작은 이미지 업데이트
   const smallImgBox = document.getElementById('bottom-small-img');
   if (detailItemImg) {
     smallImgBox.classList.remove('placeholder');
@@ -350,16 +363,15 @@ function cancelStaffCall() {
   document.getElementById(previousScreenId).classList.remove('hidden'); 
 }
 
-// === 음성 모드 및 오디오 재생 추가 ===
+// === 음성 모드 ===
 function openVoiceMode() {
   hideAllScreens();
   document.getElementById('voice-screen').classList.remove('hidden');
   
-  // 화면 진입 시 오디오 자동 재생
   const audio = document.getElementById('voice-audio');
   if (audio) {
-    audio.currentTime = 0; // 처음부터 재생
-    audio.play().catch(e => console.log('자동 재생이 브라우저 정책에 의해 차단되었습니다.', e));
+    audio.currentTime = 0; 
+    audio.play().catch(e => console.log('자동 재생이 차단되었습니다.', e));
   }
 }
 
@@ -367,7 +379,6 @@ function closeVoiceMode() {
   hideAllScreens();
   document.getElementById('home-screen').classList.remove('hidden');
   
-  // 화면 나가면 오디오 정지
   const audio = document.getElementById('voice-audio');
   if (audio) {
     audio.pause();

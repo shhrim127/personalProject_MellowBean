@@ -9,6 +9,7 @@
 <body>
   <div id="root">
     
+    <!-- 1. 시작 화면 -->
     <div id="home-screen" class="screen">
       <header class="header">
         <div class="home-btn"><span>🏠</span><p>처음으로</p></div>
@@ -23,7 +24,6 @@
         <div class="touch-text">
           <h2 class="scalable-text">화면을 터치하세요</h2>
         </div>
-        
         <div class="order-type-container">
           <button class="order-type-btn scalable-text" onclick="goToMenu('매장')">🍽️ 먹고가기<br><span>(매장)</span></button>
           <button class="order-type-btn scalable-text" onclick="goToMenu('포장')">🛍️ 가져가기<br><span>(포장)</span></button>
@@ -35,6 +35,7 @@
       </footer>
     </div>
 
+    <!-- 2. 메뉴 화면 -->
     <div id="menu-screen" class="screen hidden">
       <header class="header">
         <div class="home-btn" onclick="goToHome()"><span>🏠</span><p>처음으로</p></div>
@@ -50,54 +51,77 @@
       </nav>
 
       <div class="main-content">
+        <!-- 우리말 패치 (따뜻하게 / 차갑게) -->
         <div id="temp-toggle-area" class="temp-toggle">
-          <div class="temp-btn scalable-text" onclick="setTemp('핫', this)">핫</div>
-          <div class="temp-btn active-temp scalable-text" onclick="setTemp('아이스', this)">아이스</div>
+          <div class="temp-btn scalable-text" onclick="setTemp('따뜻하게', this)">따뜻하게</div>
+          <div class="temp-btn active-temp scalable-text" onclick="setTemp('차갑게', this)">차갑게</div>
         </div>
         
+        <!-- 커피 (새로운 이미지 파일명 반영) -->
         <div id="list-coffee" class="menu-grid">
-          <div class="menu-card" onclick="openDetail('아메리카노', 4000, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">아메리카노</p><p class="menu-price scalable-text">₩ 4,000</p></div></div>
-          <div class="menu-card" onclick="openDetail('카페라떼', 4800, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">카페라떼</p><p class="menu-price scalable-text">₩ 4,800</p></div></div>
-          <div class="menu-card" onclick="openDetail('바닐라라떼', 5300, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">바닐라라떼</p><p class="menu-price scalable-text">₩ 5,300</p></div></div>
-          <div class="menu-card" onclick="openDetail('카라멜마끼아또', 5500, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">카라멜마끼아또</p><p class="menu-price scalable-text">₩ 5,500</p></div></div>
-          <div class="menu-card" onclick="openDetail('크림콜드브루', 5800, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">크림콜드브루</p><p class="menu-price scalable-text">₩ 5,800</p></div></div>
+          <div class="menu-card" id="card-americano" onclick="openDetail('아메리카노', 4000, './images/iceAmericano.png')">
+            <div class="img-box"><img id="img-americano" src="./images/iceAmericano.png" alt="아메리카노"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">아메리카노</p><p class="menu-price scalable-text">₩ 4,000</p></div>
+          </div>
+          <div class="menu-card" onclick="openDetail('카페라떼', 4800, './images/iceCafeLatte.png')">
+            <div class="img-box"><img src="./images/iceCafeLatte.png" alt="카페라떼"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">카페라떼</p><p class="menu-price scalable-text">₩ 4,800</p></div>
+          </div>
+          <div class="menu-card" onclick="openDetail('바닐라라떼', 5300, '')">
+            <div class="img-placeholder"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">바닐라라떼</p><p class="menu-price scalable-text">₩ 5,300</p></div>
+          </div>
+          <div class="menu-card" onclick="openDetail('카라멜 라떼', 5500, './images/iceCaramelLatte.png')">
+            <div class="img-box"><img src="./images/iceCaramelLatte.png" alt="카라멜 라떼"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">카라멜 라떼</p><p class="menu-price scalable-text">₩ 5,500</p></div>
+          </div>
+          <div class="menu-card" onclick="openDetail('크림콜드브루', 5800, './images/iceCreamColdBrew.png')">
+            <div class="img-box"><img src="./images/iceCreamColdBrew.png" alt="크림콜드브루"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">크림콜드브루</p><p class="menu-price scalable-text">₩ 5,800</p></div>
+          </div>
         </div>
         
+        <!-- 차 (우리말 이름으로 변경) -->
         <div id="list-tea" class="menu-grid hidden">
-          <div class="menu-card" onclick="openDetail('캐모마일 티', 4500, './camoTea.jpg')">
-            <div class="img-box"><img src="./camoTea.jpg" alt="캐모마일 티"></div>
-            <div class="menu-info"><p class="menu-name scalable-text">캐모마일 티</p><p class="menu-price scalable-text">₩ 4,500</p></div>
+          <div class="menu-card" onclick="openDetail('캐모마일 차', 4500, './images/chamomileTea.jpg')">
+            <div class="img-box"><img src="./images/chamomileTea.jpg" alt="캐모마일 차"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">캐모마일 차</p><p class="menu-price scalable-text">₩ 4,500</p></div>
           </div>
-          <div class="menu-card" onclick="openDetail('얼그레이 티', 4500, './hongTea.jpg')">
-            <div class="img-box"><img src="./hongTea.jpg" alt="얼그레이 티"></div>
-            <div class="menu-info"><p class="menu-name scalable-text">얼그레이 티</p><p class="menu-price scalable-text">₩ 4,500</p></div>
+          <div class="menu-card" onclick="openDetail('얼그레이 홍차', 4500, './images/earlGreyTea.jpg')">
+            <div class="img-box"><img src="./images/earlGreyTea.jpg" alt="얼그레이 홍차"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">얼그레이 홍차</p><p class="menu-price scalable-text">₩ 4,500</p></div>
           </div>
-          <div class="menu-card" onclick="openDetail('유자차', 4800, './yujaTea.jpg')">
-            <div class="img-box"><img src="./yujaTea.jpg" alt="유자차"></div>
+          <div class="menu-card" onclick="openDetail('유자차', 4800, './images/yujaTea.jpg')">
+            <div class="img-box"><img src="./images/yujaTea.jpg" alt="유자차"></div>
             <div class="menu-info"><p class="menu-name scalable-text">유자차</p><p class="menu-price scalable-text">₩ 4,800</p></div>
           </div>
-          <div class="menu-card" onclick="openDetail('녹차', 4000, './greenTea.jpg')">
-            <div class="img-box"><img src="./greenTea.jpg" alt="녹차"></div>
+          <div class="menu-card" onclick="openDetail('녹차', 4000, './images/greenTea.jpg')">
+            <div class="img-box"><img src="./images/greenTea.jpg" alt="녹차"></div>
             <div class="menu-info"><p class="menu-name scalable-text">녹차</p><p class="menu-price scalable-text">₩ 4,000</p></div>
           </div>
         </div>
         
+        <!-- 주스 -->
         <div id="list-juice" class="menu-grid hidden">
-          <div class="menu-card" onclick="openDetail('오렌지 주스', 5000, './orange.jpg')">
-            <div class="img-box"><img src="./orange.jpg" alt="오렌지 주스"></div>
+          <div class="menu-card" onclick="openDetail('오렌지 주스', 5000, './images/orange.jpg')">
+            <div class="img-box"><img src="./images/orange.jpg" alt="오렌지 주스"></div>
             <div class="menu-info"><p class="menu-name scalable-text">오렌지 주스</p><p class="menu-price scalable-text">₩ 5,000</p></div>
           </div>
-          <div class="menu-card" onclick="openDetail('사과 주스', 5000, './apple.jpg')">
-            <div class="img-box"><img src="./apple.jpg" alt="사과 주스"></div>
+          <div class="menu-card" onclick="openDetail('사과 주스', 5000, './images/apple.jpg')">
+            <div class="img-box"><img src="./images/apple.jpg" alt="사과 주스"></div>
             <div class="menu-info"><p class="menu-name scalable-text">사과 주스</p><p class="menu-price scalable-text">₩ 5,000</p></div>
           </div>
-          <div class="menu-card" onclick="openDetail('딸기 바나나 주스', 5800, './strawberryBanana.jpg')">
-            <div class="img-box"><img src="./strawberryBanana.jpg" alt="딸기 바나나 주스"></div>
+          <div class="menu-card" onclick="openDetail('딸기 바나나 주스', 5800, './images/strawberryBanana.jpg')">
+            <div class="img-box"><img src="./images/strawberryBanana.jpg" alt="딸기 바나나 주스"></div>
             <div class="menu-info"><p class="menu-name scalable-text">딸기 바나나 주스</p><p class="menu-price scalable-text">₩ 5,800</p></div>
           </div>
-          <div class="menu-card" onclick="openDetail('망고 스무디', 6000, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">망고 스무디</p><p class="menu-price scalable-text">₩ 6,000</p></div></div>
+          <div class="menu-card" onclick="openDetail('망고 스무디', 6000, '')">
+            <div class="img-placeholder"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">망고 스무디</p><p class="menu-price scalable-text">₩ 6,000</p></div>
+          </div>
         </div>
         
+        <!-- 간식 -->
         <div id="list-snack" class="menu-grid hidden">
           <div class="menu-card" onclick="openDetail('치즈 케이크', 6500, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">치즈 케이크</p><p class="menu-price scalable-text">₩ 6,500</p></div></div>
           <div class="menu-card" onclick="openDetail('초코 머핀', 3500, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">초코 머핀</p><p class="menu-price scalable-text">₩ 3,500</p></div></div>
@@ -131,6 +155,7 @@
       </footer>
     </div>
 
+    <!-- 3. 상세 옵션 선택 화면 -->
     <div id="detail-screen" class="screen hidden" style="background-color: #faf6f2;">
       <header class="header">
         <div class="home-btn" onclick="closeDetail()" style="border-radius: 50%; padding: 12px 16px; font-size: 16px;">&lt;</div>
@@ -143,9 +168,8 @@
           <div id="detail-img-box" class="hero-img-box">
              <div class="hero-img-placeholder"></div>
           </div>
-          
           <div class="hero-info">
-            <span id="detail-temp-badge" class="temp-badge scalable-text">아이스</span>
+            <span id="detail-temp-badge" class="temp-badge scalable-text">차갑게</span>
             <h2 id="detail-name" class="scalable-text" style="font-size: 28px; color: var(--primary-brown); margin-top: 5px;">메뉴명 <span class="badge">BEST</span></h2>
             <p id="detail-desc" class="scalable-text" style="color: #555; margin-top: 10px; line-height: 1.5; font-size: 14px;">메뉴 설명이 들어갑니다.</p>
           </div>
@@ -202,6 +226,7 @@
       </div>
     </div>
 
+    <!-- 4. 결제 관련 화면 -->
     <div id="payment-method-screen" class="screen hidden">
       <header class="header">
         <div class="home-btn" onclick="goToMenu('매장')" style="border-radius: 50%; padding: 12px 16px;">&lt;</div>
@@ -239,6 +264,7 @@
       </div>
     </div>
 
+    <!-- 5. 직원 호출 팝업 -->
     <div id="staff-call-screen" class="screen hidden" style="background-color: var(--bg-color);">
       <div class="processing-content">
         <div class="process-icon" style="font-size: 80px; animation: none; margin-bottom: 30px;">🎧</div>
@@ -251,6 +277,7 @@
       </div>
     </div>
 
+    <!-- 6. 음성 안내 모드 -->
     <div id="voice-screen" class="screen hidden" style="background-color: #1a1a1a;">
       <div class="voice-header"><span>|||\|</span> 음성 안내 접근성 모드</div>
       <div class="voice-list">
