@@ -54,7 +54,13 @@ function changeCategory(category, element) {
   document.getElementById('list-' + category).classList.remove('hidden');
 
   const tempToggle = document.getElementById('temp-toggle-area');
-  tempToggle.style.visibility = (category === 'snack') ? 'hidden' : 'visible';
+  
+  // 🔥 확실한 에러 수정: 간식과 주스일 때는 토글 버튼을 화면에서 아예 없애버림 (display: none)
+  if(category === 'snack' || category === 'juice') {
+    tempToggle.style.display = 'none';
+  } else {
+    tempToggle.style.display = 'flex';
+  }
 }
 
 function setTemp(temp, element) {
@@ -62,7 +68,6 @@ function setTemp(temp, element) {
   document.querySelectorAll('.temp-btn').forEach(btn => btn.classList.remove('active-temp'));
   element.classList.add('active-temp');
 
-  // 아메리카노, 라떼류 이미지 다이나믹 변경 로직 (따뜻하게 / 차갑게)
   const americanoImg = document.getElementById('img-americano');
   const americanoCard = document.getElementById('card-americano');
   const cafelatteImg = document.getElementById('img-cafelatte');
@@ -91,7 +96,6 @@ function toggleFontSize() {
   document.documentElement.style.setProperty('--font-scale', scaleValues[fontStep]);
 }
 
-// === 상세 화면 ===
 function openDetail(name, price, imgSrc) {
   detailItemName = name;
   detailBasePrice = price;
@@ -111,9 +115,9 @@ function openDetail(name, price, imgSrc) {
     bigImgBox.innerHTML = `<div class="hero-img-placeholder"></div>`;
   }
 
-  // 따뜻하게/차갑게 뱃지
   const tempBadge = document.getElementById('detail-temp-badge');
-  if (currentCategory !== 'snack') {
+  // 간식과 주스일 때는 '차갑게/따뜻하게' 뱃지 완전 숨기기
+  if (currentCategory !== 'snack' && currentCategory !== 'juice') {
     tempBadge.style.display = 'inline-block';
     tempBadge.innerText = currentTemp;
     tempBadge.className = 'temp-badge scalable-text ' + (currentTemp === '따뜻하게' ? 'hot' : 'ice');
@@ -225,7 +229,12 @@ function updateDetailBottomBar() {
   let summaryText = [];
   if (currentCategory !== 'snack') {
     document.getElementById('bottom-name').innerText = `${detailItemName} (${detailSelectedSize.name})`;
-    summaryText.push(currentTemp);
+    
+    // 주스가 아닐 때만 '차갑게/따뜻하게' 텍스트를 옵션 목록에 넣음
+    if (currentCategory !== 'juice') {
+      summaryText.push(currentTemp);
+    }
+    
     detailFreeOptions.forEach(opt => summaryText.push(opt));
     detailPaidOptions.forEach(opt => summaryText.push(opt.name));
     
@@ -242,7 +251,11 @@ function addToCart() {
 
   let optionArray = [];
   if (currentCategory !== 'snack') {
-    optionArray.push(currentTemp);
+    // 주스가 아닐 때만 장바구니 옵션에 온도 추가
+    if (currentCategory !== 'juice') {
+      optionArray.push(currentTemp);
+    }
+    
     if(detailSelectedSize.name !== '작은') optionArray.push(`사이즈: ${detailSelectedSize.name}`);
     detailFreeOptions.forEach(opt => optionArray.push(opt));
     detailPaidOptions.forEach(opt => optionArray.push(opt.name));
@@ -358,7 +371,6 @@ function showSuccessScreen() {
   setTimeout(() => { goToHome(); }, 4000);
 }
 
-// === 직원 호출 ===
 function callStaff(screenId) {
   previousScreenId = screenId; 
   hideAllScreens();
@@ -370,7 +382,6 @@ function cancelStaffCall() {
   document.getElementById(previousScreenId).classList.remove('hidden'); 
 }
 
-// === 음성 모드 ===
 function openVoiceMode() {
   hideAllScreens();
   document.getElementById('voice-screen').classList.remove('hidden');
