@@ -1,6 +1,6 @@
 let orderType = ''; 
 let currentCategory = 'coffee'; 
-let currentTemp = '차갑게'; // 기본값을 차갑게로 세팅
+let currentTemp = '차갑게'; 
 let cart = []; 
 let fontStep = 0; 
 let previousScreenId = 'home-screen'; 
@@ -12,7 +12,6 @@ let detailSelectedSize = { name: '작은', price: 0 };
 let detailFreeOptions = new Set();
 let detailPaidOptions = [];
 
-// 메뉴 이름 변경에 맞춰 설명 리스트 업데이트
 const menuDescriptions = {
   '아메리카노': '진한 에스프레소의 풍미를 느낄 수 있는 깔끔한 커피',
   '카페라떼': '에스프레소에 부드러운 우유를 더해 고소한 커피',
@@ -63,17 +62,26 @@ function setTemp(temp, element) {
   document.querySelectorAll('.temp-btn').forEach(btn => btn.classList.remove('active-temp'));
   element.classList.add('active-temp');
 
-  // 아메리카노 이미지 다이나믹 변경 로직 (따뜻하게 / 차갑게)
+  // 아메리카노, 라떼류 이미지 다이나믹 변경 로직 (따뜻하게 / 차갑게)
   const americanoImg = document.getElementById('img-americano');
   const americanoCard = document.getElementById('card-americano');
-  if(americanoImg && americanoCard) {
-    if(temp === '따뜻하게') {
-      americanoImg.src = './images/hotAmericano.png';
-      americanoCard.setAttribute('onclick', "openDetail('아메리카노', 4000, './images/hotAmericano.png')");
-    } else {
-      americanoImg.src = './images/iceAmericano.png';
-      americanoCard.setAttribute('onclick', "openDetail('아메리카노', 4000, './images/iceAmericano.png')");
-    }
+  const cafelatteImg = document.getElementById('img-cafelatte');
+  const cafelatteCard = document.getElementById('card-cafelatte');
+  const vanillalatteImg = document.getElementById('img-vanillalatte');
+  const vanillalatteCard = document.getElementById('card-vanillalatte');
+  const caramellatteImg = document.getElementById('img-caramellatte');
+  const caramellatteCard = document.getElementById('card-caramellatte');
+
+  if(temp === '따뜻하게') {
+    if(americanoImg) { americanoImg.src = './images/hotAmericano.png'; americanoCard.setAttribute('onclick', "openDetail('아메리카노', 4000, './images/hotAmericano.png')"); }
+    if(cafelatteImg) { cafelatteImg.src = './images/hotCafeLatte.png'; cafelatteCard.setAttribute('onclick', "openDetail('카페라떼', 4800, './images/hotCafeLatte.png')"); }
+    if(vanillalatteImg) { vanillalatteImg.src = './images/hotVanillaLatte.png'; vanillalatteCard.setAttribute('onclick', "openDetail('바닐라라떼', 5300, './images/hotVanillaLatte.png')"); }
+    if(caramellatteImg) { caramellatteImg.src = './images/hotCaramelLatte.png'; caramellatteCard.setAttribute('onclick', "openDetail('카라멜 라떼', 5500, './images/hotCaramelLatte.png')"); }
+  } else {
+    if(americanoImg) { americanoImg.src = './images/iceAmericano.png'; americanoCard.setAttribute('onclick', "openDetail('아메리카노', 4000, './images/iceAmericano.png')"); }
+    if(cafelatteImg) { cafelatteImg.src = './images/iceCafeLatte.png'; cafelatteCard.setAttribute('onclick', "openDetail('카페라떼', 4800, './images/iceCafeLatte.png')"); }
+    if(vanillalatteImg) { vanillalatteImg.src = './images/iceVanillaLatte.png'; vanillalatteCard.setAttribute('onclick', "openDetail('바닐라라떼', 5300, './images/iceVanillaLatte.png')"); }
+    if(caramellatteImg) { caramellatteImg.src = './images/iceCaramelLatte.png'; caramellatteCard.setAttribute('onclick', "openDetail('카라멜 라떼', 5500, './images/iceCaramelLatte.png')"); }
   }
 }
 
@@ -126,7 +134,6 @@ function openDetail(name, price, imgSrc) {
     const firstSizeBox = document.querySelector('.size-box');
     if (firstSizeBox) firstSizeBox.classList.add('active-opt');
 
-    // 우유 변경 메뉴 리스트 (카라멜 라떼로 이름 변경)
     const milkDrinks = ['카페라떼', '바닐라라떼', '카라멜 라떼', '크림콜드브루']; 
     const optShot = document.getElementById('opt-shot');
     const optMilk = document.getElementById('opt-milk');
