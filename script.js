@@ -357,6 +357,7 @@ function showSuccessScreen() {
   setTimeout(() => { goToHome(); }, 4000);
 }
 
+// === 일반 모드용 직원 호출 (메뉴/홈 화면) ===
 function callStaff(screenId) {
   previousScreenId = screenId; 
   hideAllScreens();
@@ -394,7 +395,6 @@ const voiceFiles = {
 let currentAudioSequence = [];
 let currentAudioIndex = 0;
 
-// 연속 재생 함수 
 function playAudioSequence(seqArray) {
   currentAudioSequence = seqArray;
   currentAudioIndex = 0;
@@ -420,27 +420,26 @@ function playNextAudio() {
 function openVoiceMode() {
   hideAllScreens();
   document.getElementById('voice-main-screen').classList.remove('hidden');
-  playAudioSequence([0, 1, 2, 3, 4]); // 0번부터 4번 파일까지 주르륵 재생
+  playAudioSequence([0, 1, 2, 3, 4]); 
 }
 
 // 2번 화면: 1번(음료주문) 누르고 세부 진입
 function goToVoiceMenu() {
   hideAllScreens();
   document.getElementById('voice-menu-screen').classList.remove('hidden');
-  playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); // 5번부터 14번 파일까지 주르륵 재생
+  playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); 
 }
 
-// 3번: 뒤로가기 누르면 "이전화면 돌아가기" 말하고 메인으로 돌아가서 다시 1번 주르륵 
+// 3번: 뒤로가기
 function goBackToVoiceMain() {
   currentAudioSequence = []; 
   const audio = document.getElementById('voice-audio');
+  
   if(audio) {
     audio.pause();
     audio.onended = null;
-    audio.src = voiceFiles[13]; // 7번 이전화면으로 돌아가기 재생
+    audio.src = voiceFiles[13]; 
     audio.play().catch(e => console.log(e));
-    
-    // 이 말이 끝나면 다시 메인 화면을 띄우고 메인 안내음성 주르륵 재생
     audio.onended = () => {
       hideAllScreens();
       document.getElementById('voice-main-screen').classList.remove('hidden');
@@ -449,25 +448,30 @@ function goBackToVoiceMain() {
   }
 }
 
+// 음성 모드 종료 (메인 화면)
 function closeVoiceMode() {
   hideAllScreens();
   document.getElementById('home-screen').classList.remove('hidden');
   const audio = document.getElementById('voice-audio');
   if (audio) { audio.pause(); audio.onended = null; }
+  // 이제 TTS 안쓰니까 관련 코드 삭제
 }
 
+// 🔥 음성 모드 직원 호출 화면 띄우고 녹음된 "3번 직원 호출"만 딱! 재생 🔥
 function callVoiceStaff() {
   hideAllScreens();
   document.getElementById('voice-staff-call-screen').classList.remove('hidden');
+  
+  // 3번 녹음 파일(audio_2_삼번__직원_호출_.mp3)만 단독 재생
+  playAudioSequence([2]);
 }
 
+// 직원 호출 취소
 function cancelVoiceStaffCall() {
   hideAllScreens();
   document.getElementById('voice-main-screen').classList.remove('hidden'); 
   playAudioSequence([0, 1, 2, 3, 4]); // 취소하고 돌아오면 다시 안내 시작
 }
-
-// 🔥 [핵심 변경] 터치(마우스)와 키보드가 완전히 동일하게 동작하도록 매핑하는 함수들 🔥
 
 // 음성 지원 메인 화면 동작 컨트롤
 function handleVoiceMainAction(key) {
@@ -480,7 +484,7 @@ function handleVoiceMainAction(key) {
   } else if (key === '4') {
     closeVoiceMode();
   } else if (key === '*') {
-    playAudioSequence([0, 1, 2, 3, 4]); // 다시 듣기
+    playAudioSequence([0, 1, 2, 3, 4]); 
   }
 }
 
@@ -493,10 +497,10 @@ function handleVoiceMenuAction(key) {
   else if (key === '5') playAudioSequence([11]);
   else if (key === '6') playAudioSequence([12]);
   else if (key === '7') {
-    goBackToVoiceMain(); // 뒤로가기
+    goBackToVoiceMain(); 
   } 
   else if (key === '*') {
-    playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); // 다시 듣기
+    playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); 
   }
 }
 
