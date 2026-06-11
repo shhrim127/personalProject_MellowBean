@@ -370,7 +370,7 @@ function cancelStaffCall() {
 
 
 // ==========================================
-// 🔥 오디오 체인(연쇄) 재생 시스템 🔥
+// 🔥 오디오 매핑 및 터치/키보드 공통 액션 핸들러 🔥
 // ==========================================
 
 const voiceFiles = {
@@ -394,7 +394,7 @@ const voiceFiles = {
 let currentAudioSequence = [];
 let currentAudioIndex = 0;
 
-// 연속 재생 함수 (배열에 넣은 숫자의 오디오가 차례대로 나옴)
+// 연속 재생 함수 
 function playAudioSequence(seqArray) {
   currentAudioSequence = seqArray;
   currentAudioIndex = 0;
@@ -432,7 +432,7 @@ function goToVoiceMenu() {
 
 // 3번: 뒤로가기 누르면 "이전화면 돌아가기" 말하고 메인으로 돌아가서 다시 1번 주르륵 
 function goBackToVoiceMain() {
-  currentAudioSequence = []; // 기존 재생 멈춤
+  currentAudioSequence = []; 
   const audio = document.getElementById('voice-audio');
   if(audio) {
     audio.pause();
@@ -467,45 +467,57 @@ function cancelVoiceStaffCall() {
   playAudioSequence([0, 1, 2, 3, 4]); // 취소하고 돌아오면 다시 안내 시작
 }
 
-// === 키보드 이벤트 컨트롤러 ===
+// 🔥 [핵심 변경] 터치(마우스)와 키보드가 완전히 동일하게 동작하도록 매핑하는 함수들 🔥
+
+// 음성 지원 메인 화면 동작 컨트롤
+function handleVoiceMainAction(key) {
+  if (key === '1') {
+    goToVoiceMenu();
+  } else if (key === '2') {
+    playAudioSequence([1]); 
+  } else if (key === '3') {
+    callVoiceStaff();
+  } else if (key === '4') {
+    closeVoiceMode();
+  } else if (key === '*') {
+    playAudioSequence([0, 1, 2, 3, 4]); // 다시 듣기
+  }
+}
+
+// 음성 지원 메뉴(음료) 화면 동작 컨트롤
+function handleVoiceMenuAction(key) {
+  if (key === '1') playAudioSequence([7]);
+  else if (key === '2') playAudioSequence([8]);
+  else if (key === '3') playAudioSequence([9]);
+  else if (key === '4') playAudioSequence([10]);
+  else if (key === '5') playAudioSequence([11]);
+  else if (key === '6') playAudioSequence([12]);
+  else if (key === '7') {
+    goBackToVoiceMain(); // 뒤로가기
+  } 
+  else if (key === '*') {
+    playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); // 다시 듣기
+  }
+}
+
+// 키보드 이벤트 연결
 document.addEventListener('keydown', function(event) {
   const voiceMain = document.getElementById('voice-main-screen');
   const voiceMenu = document.getElementById('voice-menu-screen');
   const voiceStaff = document.getElementById('voice-staff-call-screen');
 
-  // [음성 메인 화면일 때]
   if (!voiceMain.classList.contains('hidden')) {
-    if (event.key === '1') {
-      goToVoiceMenu();
-    } else if (event.key === '2') {
-      // 2번 메뉴 검색 (현재 UI에서는 별도 동작이 없으므로 일단 1번 오디오 다시 재생)
-      playAudioSequence([1]); 
-    } else if (event.key === '3') {
-      callVoiceStaff();
-    } else if (event.key === '4') {
-      closeVoiceMode();
-    } else if (event.key === '*') {
-      playAudioSequence([0, 1, 2, 3, 4]); // 다시 듣기
+    const validKeys = ['1', '2', '3', '4', '*'];
+    if (validKeys.includes(event.key)) {
+      handleVoiceMainAction(event.key);
     }
   } 
-  
-  // [음성 음료 선택 화면일 때]
   else if (!voiceMenu.classList.contains('hidden')) {
-    if (event.key === '1') playAudioSequence([7]);
-    else if (event.key === '2') playAudioSequence([8]);
-    else if (event.key === '3') playAudioSequence([9]);
-    else if (event.key === '4') playAudioSequence([10]);
-    else if (event.key === '5') playAudioSequence([11]);
-    else if (event.key === '6') playAudioSequence([12]);
-    else if (event.key === '7') {
-      goBackToVoiceMain(); // 7번 누르면 뒤로가기 로직 실행
-    } 
-    else if (event.key === '*') {
-      playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); // 다시 듣기
+    const validKeys = ['1', '2', '3', '4', '5', '6', '7', '*'];
+    if (validKeys.includes(event.key)) {
+      handleVoiceMenuAction(event.key);
     }
   } 
-  
-  // [직원 호출 대기 화면일 때]
   else if (!voiceStaff.classList.contains('hidden')) {
     if (event.key === '0') {
       cancelVoiceStaffCall();
