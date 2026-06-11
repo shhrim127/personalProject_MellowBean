@@ -57,7 +57,6 @@ function changeCategory(category, element) {
   document.getElementById('list-' + category).classList.remove('hidden');
 
   const tempToggle = document.getElementById('temp-toggle-area');
-  
   if(category === 'snack' || category === 'juice') {
     tempToggle.style.display = 'none';
   } else {
@@ -78,7 +77,6 @@ function setTemp(temp, element) {
   const vanillalatteCard = document.getElementById('card-vanillalatte');
   const caramellatteImg = document.getElementById('img-caramellatte');
   const caramellatteCard = document.getElementById('card-caramellatte');
-  
   const creamcoldbrewCard = document.getElementById('card-creamcoldbrew');
 
   if(temp === '따뜻하게') {
@@ -86,14 +84,12 @@ function setTemp(temp, element) {
     if(cafelatteImg) { cafelatteImg.src = './images/hotCafeLatte.png'; cafelatteCard.setAttribute('onclick', "openDetail('카페라떼', 4800, './images/hotCafeLatte.png')"); }
     if(vanillalatteImg) { vanillalatteImg.src = './images/hotVanillaLatte.png'; vanillalatteCard.setAttribute('onclick', "openDetail('바닐라라떼', 5300, './images/hotVanillaLatte.png')"); }
     if(caramellatteImg) { caramellatteImg.src = './images/hotCaramelLatte.png'; caramellatteCard.setAttribute('onclick', "openDetail('카라멜 라떼', 5500, './images/hotCaramelLatte.png')"); }
-    // 따뜻하게 메뉴일 때 크림콜드브루 숨김
     if(creamcoldbrewCard) creamcoldbrewCard.style.display = 'none';
   } else {
     if(americanoImg) { americanoImg.src = './images/iceAmericano.png'; americanoCard.setAttribute('onclick', "openDetail('아메리카노', 4000, './images/iceAmericano.png')"); }
     if(cafelatteImg) { cafelatteImg.src = './images/iceCafeLatte.png'; cafelatteCard.setAttribute('onclick', "openDetail('카페라떼', 4800, './images/iceCafeLatte.png')"); }
     if(vanillalatteImg) { vanillalatteImg.src = './images/iceVanillaLatte.png'; vanillalatteCard.setAttribute('onclick', "openDetail('바닐라라떼', 5300, './images/iceVanillaLatte.png')"); }
     if(caramellatteImg) { caramellatteImg.src = './images/iceCaramelLatte.png'; caramellatteCard.setAttribute('onclick', "openDetail('카라멜 라떼', 5500, './images/iceCaramelLatte.png')"); }
-    // 차갑게 메뉴일 때 크림콜드브루 다시 보임
     if(creamcoldbrewCard) creamcoldbrewCard.style.display = 'flex';
   }
 }
@@ -105,7 +101,6 @@ function toggleFontSize() {
 }
 
 function openDetail(name, price, imgSrc) {
-  // 간식일 경우 옵션창 건너뛰고 바로 장바구니로!
   if (currentCategory === 'snack') {
     const existingItemIndex = cart.findIndex(item => item.name === name && item.optionStr === '');
     if (existingItemIndex > -1) {
@@ -120,7 +115,6 @@ function openDetail(name, price, imgSrc) {
   detailItemName = name;
   detailBasePrice = price;
   detailItemImg = imgSrc || ''; 
-  
   detailSelectedSize = { name: '작은', price: 0 };
   detailFreeOptions.clear();
   detailPaidOptions = [];
@@ -177,7 +171,6 @@ function openDetail(name, price, imgSrc) {
       paidGrid.style.gridTemplateColumns = '1fr'; 
     }
   }
-  
   updateDetailBottomBar();
   hideAllScreens();
   document.getElementById('detail-screen').classList.remove('hidden');
@@ -244,14 +237,9 @@ function updateDetailBottomBar() {
   let summaryText = [];
   if (currentCategory !== 'snack') {
     document.getElementById('bottom-name').innerText = `${detailItemName} (${detailSelectedSize.name})`;
-    
-    if (currentCategory !== 'juice') {
-      summaryText.push(currentTemp);
-    }
-    
+    if (currentCategory !== 'juice') summaryText.push(currentTemp);
     detailFreeOptions.forEach(opt => summaryText.push(opt));
     detailPaidOptions.forEach(opt => summaryText.push(opt.name));
-    
     document.getElementById('bottom-options').innerText = summaryText.length > 0 ? summaryText.join(', ') : '기본 옵션';
   } else {
     document.getElementById('bottom-name').innerText = detailItemName;
@@ -265,10 +253,7 @@ function addToCart() {
 
   let optionArray = [];
   if (currentCategory !== 'snack') {
-    if (currentCategory !== 'juice') {
-      optionArray.push(currentTemp);
-    }
-    
+    if (currentCategory !== 'juice') optionArray.push(currentTemp);
     if(detailSelectedSize.name !== '작은') optionArray.push(`사이즈: ${detailSelectedSize.name}`);
     detailFreeOptions.forEach(opt => optionArray.push(opt));
     detailPaidOptions.forEach(opt => optionArray.push(opt.name));
@@ -276,19 +261,11 @@ function addToCart() {
 
   let optionString = optionArray.join(' / ');
 
-  const existingItemIndex = cart.findIndex(item => 
-    item.name === detailItemName && item.optionStr === optionString
-  );
-
+  const existingItemIndex = cart.findIndex(item => item.name === detailItemName && item.optionStr === optionString);
   if (existingItemIndex > -1) {
     cart[existingItemIndex].qty += 1; 
   } else {
-    cart.push({
-      name: detailItemName,
-      price: finalPrice,
-      optionStr: optionString,
-      qty: 1
-    });
+    cart.push({ name: detailItemName, price: finalPrice, optionStr: optionString, qty: 1 });
   }
 
   closeDetail();
@@ -321,12 +298,10 @@ function updateCartUI() {
   } else {
     emptyText.style.display = 'none';
     cartList.style.display = 'flex';
-    
     cart.forEach((item, index) => {
       const itemTotal = item.price * item.qty;
       totalPrice += itemTotal;
       totalCount += item.qty;
-      
       const div = document.createElement('div');
       div.className = 'cart-item';
       div.innerHTML = `
@@ -346,7 +321,6 @@ function updateCartUI() {
       cartList.appendChild(div);
     });
   }
-
   document.getElementById('total-count').innerText = totalCount + '개';
   document.getElementById('total-price').innerText = '₩ ' + totalPrice.toLocaleString();
   document.getElementById('final-price').innerText = '₩ ' + totalPrice.toLocaleString();
@@ -373,7 +347,6 @@ function processPayment(method) {
     document.getElementById('process-icon').innerText = '📱';
     document.getElementById('process-text').innerText = '바코드 인식중...';
   }
-
   setTimeout(() => { showSuccessScreen(); }, 2500);
 }
 
@@ -395,22 +368,83 @@ function cancelStaffCall() {
   document.getElementById(previousScreenId).classList.remove('hidden'); 
 }
 
-// === 음성 모드 및 연쇄 재생 로직 ===
+
+// ==========================================
+// 🔥 오디오 체인(연쇄) 재생 시스템 🔥
+// ==========================================
+
+const voiceFiles = {
+  0: './audio/audio_0_일번__음료_주문_.mp3',
+  1: './audio/audio_1_이번__메뉴_검색_.mp3',
+  2: './audio/audio_2_삼번__직원_호출_.mp3',
+  3: './audio/audio_3_사번__음성_안내_모드_종료_.mp3',
+  4: './audio/audio_4_다시_들으시려면_별표_버튼을_눌러_주세요_.mp3',
+  5: './audio/audio_5_음료_주문__커피_카테고리의_차가운_메뉴_화면입니다_.mp3',
+  6: './audio/audio_6_키패드_숫자를_눌러_메뉴를_선택해_주세요_.mp3',
+  7: './audio/audio_7_일번__아메리카노__4_000원_.mp3',
+  8: './audio/audio_8_이번__카페라떼__4_800원_.mp3',
+  9: './audio/audio_9_삼번__바닐라라떼__5_300원_.mp3',
+  10: './audio/audio_10_사번__카라멜_라떼__5_500원_.mp3',
+  11: './audio/audio_11_오번__크림콜드브루__5_800원_.mp3',
+  12: './audio/audio_12_육번__따뜻한_메뉴로_변경_.mp3',
+  13: './audio/audio_13_칠번__이전_화면으로_돌아가기_.mp3',
+  14: './audio/audio_14_다시_들으시려면_별표_버튼을_눌러주세요_.mp3'
+};
+
+let currentAudioSequence = [];
+let currentAudioIndex = 0;
+
+// 연속 재생 함수 (배열에 넣은 숫자의 오디오가 차례대로 나옴)
+function playAudioSequence(seqArray) {
+  currentAudioSequence = seqArray;
+  currentAudioIndex = 0;
+  playNextAudio();
+}
+
+function playNextAudio() {
+  const audio = document.getElementById('voice-audio');
+  if (!audio || currentAudioIndex >= currentAudioSequence.length) return;
+
+  audio.pause();
+  audio.onended = null;
+  audio.src = voiceFiles[currentAudioSequence[currentAudioIndex]];
+  audio.play().catch(e => console.log('재생 차단됨', e));
+
+  audio.onended = () => {
+    currentAudioIndex++;
+    playNextAudio();
+  };
+}
+
+// 1번 화면: 메인 진입
 function openVoiceMode() {
   hideAllScreens();
-  document.getElementById('voice-screen').classList.remove('hidden');
-  
+  document.getElementById('voice-main-screen').classList.remove('hidden');
+  playAudioSequence([0, 1, 2, 3, 4]); // 0번부터 4번 파일까지 주르륵 재생
+}
+
+// 2번 화면: 1번(음료주문) 누르고 세부 진입
+function goToVoiceMenu() {
+  hideAllScreens();
+  document.getElementById('voice-menu-screen').classList.remove('hidden');
+  playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); // 5번부터 14번 파일까지 주르륵 재생
+}
+
+// 3번: 뒤로가기 누르면 "이전화면 돌아가기" 말하고 메인으로 돌아가서 다시 1번 주르륵 
+function goBackToVoiceMain() {
+  currentAudioSequence = []; // 기존 재생 멈춤
   const audio = document.getElementById('voice-audio');
-  if (audio) {
-    // 첫 번째 오디오 재생 ("차가운 메뉴 화면입니다")
-    audio.src = './audio/audio_5_음료_주문__커피_카테고리의_차가운_메뉴_화면입니다_.mp3';
-    audio.play().catch(e => console.log('자동 재생 차단됨', e));
+  if(audio) {
+    audio.pause();
+    audio.onended = null;
+    audio.src = voiceFiles[13]; // 7번 이전화면으로 돌아가기 재생
+    audio.play().catch(e => console.log(e));
     
-    // 끝나면 두 번째 안내 오디오 ("키패드를 눌러주세요") 자동 재생
+    // 이 말이 끝나면 다시 메인 화면을 띄우고 메인 안내음성 주르륵 재생
     audio.onended = () => {
-      audio.src = './audio/audio_6_키패드_숫자를_눌러_메뉴를_선택해_주세요_.mp3';
-      audio.play().catch(e => console.log('재생 차단됨', e));
-      audio.onended = null; 
+      hideAllScreens();
+      document.getElementById('voice-main-screen').classList.remove('hidden');
+      playAudioSequence([0, 1, 2, 3, 4]);
     };
   }
 }
@@ -418,12 +452,8 @@ function openVoiceMode() {
 function closeVoiceMode() {
   hideAllScreens();
   document.getElementById('home-screen').classList.remove('hidden');
-  
   const audio = document.getElementById('voice-audio');
-  if (audio) {
-    audio.pause();
-    audio.onended = null;
-  }
+  if (audio) { audio.pause(); audio.onended = null; }
 }
 
 function callVoiceStaff() {
@@ -433,46 +463,52 @@ function callVoiceStaff() {
 
 function cancelVoiceStaffCall() {
   hideAllScreens();
-  document.getElementById('voice-screen').classList.remove('hidden'); 
+  document.getElementById('voice-main-screen').classList.remove('hidden'); 
+  playAudioSequence([0, 1, 2, 3, 4]); // 취소하고 돌아오면 다시 안내 시작
 }
 
-// 키패드 오디오 매핑 (올려주신 실제 파일명과 매칭)
-const audioFiles = {
-  '1': './audio/audio_7_일번__아메리카노__4_000원_.mp3',
-  '2': './audio/audio_8_이번__카페라떼__4_800원_.mp3',
-  '3': './audio/audio_9_삼번__바닐라라떼__5_300원_.mp3',
-  '4': './audio/audio_10_사번__카라멜_라떼__5_500원_.mp3',
-  '5': './audio/audio_11_오번__크림콜드브루__5_800원_.mp3',
-  '6': './audio/audio_12_육번__따뜻한_메뉴로_변경_.mp3',
-  '7': './audio/audio_13_칠번__이전_화면으로_돌아가기_.mp3',
-  '*': './audio/audio_14_다시_들으시려면_별표_버튼을_눌러주세요_.mp3'
-};
-
-// 키보드 오디오 재생 이벤트
+// === 키보드 이벤트 컨트롤러 ===
 document.addEventListener('keydown', function(event) {
-  const voiceScreen = document.getElementById('voice-screen');
-  const voiceStaffScreen = document.getElementById('voice-staff-call-screen');
-  const audio = document.getElementById('voice-audio');
+  const voiceMain = document.getElementById('voice-main-screen');
+  const voiceMenu = document.getElementById('voice-menu-screen');
+  const voiceStaff = document.getElementById('voice-staff-call-screen');
 
-  if (!voiceScreen.classList.contains('hidden') || !voiceStaffScreen.classList.contains('hidden')) {
-    
-    // 오디오 재생
-    if (audioFiles[event.key] && !voiceScreen.classList.contains('hidden')) {
-      audio.onended = null; // 안내음성 연쇄재생 방지
-      audio.src = audioFiles[event.key];
-      audio.play().catch(e => console.log('재생 차단됨', e));
+  // [음성 메인 화면일 때]
+  if (!voiceMain.classList.contains('hidden')) {
+    if (event.key === '1') {
+      goToVoiceMenu();
+    } else if (event.key === '2') {
+      // 2번 메뉴 검색 (현재 UI에서는 별도 동작이 없으므로 일단 1번 오디오 다시 재생)
+      playAudioSequence([1]); 
+    } else if (event.key === '3') {
+      callVoiceStaff();
+    } else if (event.key === '4') {
+      closeVoiceMode();
+    } else if (event.key === '*') {
+      playAudioSequence([0, 1, 2, 3, 4]); // 다시 듣기
     }
-
-    // 메뉴 이동 기능
-    if (!voiceScreen.classList.contains('hidden')) {
-      if (event.key === '7') {
-        // 7번을 누르면 음성이 나오는 시간을 벌기 위해 1.5초 뒤에 닫기
-        setTimeout(() => { closeVoiceMode(); }, 1500);
-      }
-    } else if (!voiceStaffScreen.classList.contains('hidden')) {
-      if (event.key === '0') {
-        cancelVoiceStaffCall();
-      }
+  } 
+  
+  // [음성 음료 선택 화면일 때]
+  else if (!voiceMenu.classList.contains('hidden')) {
+    if (event.key === '1') playAudioSequence([7]);
+    else if (event.key === '2') playAudioSequence([8]);
+    else if (event.key === '3') playAudioSequence([9]);
+    else if (event.key === '4') playAudioSequence([10]);
+    else if (event.key === '5') playAudioSequence([11]);
+    else if (event.key === '6') playAudioSequence([12]);
+    else if (event.key === '7') {
+      goBackToVoiceMain(); // 7번 누르면 뒤로가기 로직 실행
+    } 
+    else if (event.key === '*') {
+      playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); // 다시 듣기
+    }
+  } 
+  
+  // [직원 호출 대기 화면일 때]
+  else if (!voiceStaff.classList.contains('hidden')) {
+    if (event.key === '0') {
+      cancelVoiceStaffCall();
     }
   }
 });
