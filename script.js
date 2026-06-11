@@ -357,7 +357,7 @@ function showSuccessScreen() {
   setTimeout(() => { goToHome(); }, 4000);
 }
 
-// === 일반 모드용 직원 호출 (메뉴/홈 화면) ===
+// === 직원 호출 (일반 모드 화면용) ===
 function callStaff(screenId) {
   previousScreenId = screenId; 
   hideAllScreens();
@@ -435,9 +435,15 @@ function goBackToVoiceMain() {
   currentAudioSequence = []; 
   const audio = document.getElementById('voice-audio');
   
+  // 모든 소리 중지
   if(audio) {
     audio.pause();
     audio.onended = null;
+  }
+  // TTS 중지
+  window.speechSynthesis.cancel();
+  
+  if(audio) {
     audio.src = voiceFiles[13]; 
     audio.play().catch(e => console.log(e));
     audio.onended = () => {
@@ -454,23 +460,35 @@ function closeVoiceMode() {
   document.getElementById('home-screen').classList.remove('hidden');
   const audio = document.getElementById('voice-audio');
   if (audio) { audio.pause(); audio.onended = null; }
-  // 이제 TTS 안쓰니까 관련 코드 삭제
+  window.speechSynthesis.cancel(); // 기계음도 꺼지게 처리
 }
 
-// 🔥 음성 모드 직원 호출 화면 띄우고 녹음된 "3번 직원 호출"만 딱! 재생 🔥
+// 🔥 [새로 추가된 부분!] 음성 모드 전용 직원 호출 화면 띄우기 및 TTS 기계음 읽기 🔥
 function callVoiceStaff() {
   hideAllScreens();
   document.getElementById('voice-staff-call-screen').classList.remove('hidden');
   
-  // 3번 녹음 파일(audio_2_삼번__직원_호출_.mp3)만 단독 재생
-  playAudioSequence([2]);
+  // 기존 재생되던 녹음 파일 멈춤
+  const audio = document.getElementById('voice-audio');
+  if (audio) {
+    audio.pause();
+    audio.onended = null;
+    currentAudioSequence = [];
+  }
+
+  // 아직 음성 파일이 없으므로 임시로 기계음(TTS)이 읽어줍니다!
+  window.speechSynthesis.cancel(); 
+  const speech = new SpeechSynthesisUtterance("직원 호출을 하셨습니다. 직원이 오고 있습니다. 취소하시려면 영번을 눌러주세요.");
+  speech.lang = 'ko-KR'; // 한국어 목소리
+  window.speechSynthesis.speak(speech);
 }
 
 // 직원 호출 취소
 function cancelVoiceStaffCall() {
   hideAllScreens();
   document.getElementById('voice-main-screen').classList.remove('hidden'); 
-  playAudioSequence([0, 1, 2, 3, 4]); // 취소하고 돌아오면 다시 안내 시작
+  window.speechSynthesis.cancel(); // 기계음 즉시 정지
+  playAudioSequence([0, 1, 2, 3, 4]); 
 }
 
 // 음성 지원 메인 화면 동작 컨트롤
