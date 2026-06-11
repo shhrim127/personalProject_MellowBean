@@ -357,7 +357,6 @@ function showSuccessScreen() {
   setTimeout(() => { goToHome(); }, 4000);
 }
 
-// === 직원 호출 (일반 모드 화면용) ===
 function callStaff(screenId) {
   previousScreenId = screenId; 
   hideAllScreens();
@@ -371,25 +370,26 @@ function cancelStaffCall() {
 
 
 // ==========================================
-// 🔥 오디오 매핑 및 터치/키보드 공통 액션 핸들러 🔥
+// 🔥 새로 구성된 16개 파일(0~15) 완벽 매핑 🔥
 // ==========================================
 
 const voiceFiles = {
-  0: './audio/audio_0_일번__음료_주문_.mp3',
-  1: './audio/audio_1_이번__메뉴_검색_.mp3',
-  2: './audio/audio_2_삼번__직원_호출_.mp3',
-  3: './audio/audio_3_사번__음성_안내_모드_종료_.mp3',
-  4: './audio/audio_4_다시_들으시려면_별표_버튼을_눌러_주세요_.mp3',
-  5: './audio/audio_5_음료_주문__커피_카테고리의_차가운_메뉴_화면입니다_.mp3',
-  6: './audio/audio_6_키패드_숫자를_눌러_메뉴를_선택해_주세요_.mp3',
-  7: './audio/audio_7_일번__아메리카노__4_000원_.mp3',
-  8: './audio/audio_8_이번__카페라떼__4_800원_.mp3',
-  9: './audio/audio_9_삼번__바닐라라떼__5_300원_.mp3',
-  10: './audio/audio_10_사번__카라멜_라떼__5_500원_.mp3',
-  11: './audio/audio_11_오번__크림콜드브루__5_800원_.mp3',
-  12: './audio/audio_12_육번__따뜻한_메뉴로_변경_.mp3',
-  13: './audio/audio_13_칠번__이전_화면으로_돌아가기_.mp3',
-  14: './audio/audio_14_다시_들으시려면_별표_버튼을_눌러주세요_.mp3'
+  0: './audio/audio_0_일번__주문하기_.mp3',
+  1: './audio/audio_1_이번__직원_호출_.mp3',
+  2: './audio/audio_2_삼번__음성_안내_모드_종료_.mp3',
+  3: './audio/audio_3_다시_들으시려면_별표_버튼을_눌러_주세요_.mp3',
+  4: './audio/audio_4_음료_주문__커피_카테고리의_차가운_메뉴_화면입니다_.mp3',
+  5: './audio/audio_5_키패드_숫자를_눌러_메뉴를_선택해_주세요_.mp3',
+  6: './audio/audio_6_일번__아메리카노__4_000원_.mp3',
+  7: './audio/audio_7_이번__카페라떼__4_800원_.mp3',
+  8: './audio/audio_8_삼번__바닐라라떼__5_300원_.mp3',
+  9: './audio/audio_9_사번__카라멜_라떼__5_500원_.mp3',
+  10: './audio/audio_10_오번__크림콜드브루__5_800원_.mp3',
+  11: './audio/audio_11_육번__따뜻한_메뉴로_변경_.mp3',
+  12: './audio/audio_12_칠번__이전_화면으로_돌아가기_.mp3',
+  13: './audio/audio_13_다시_들으시려면_별표_버튼을_눌러주세요_.mp3',
+  14: './audio/audio_14_직원_호출을_선택하셨습니다_.mp3',
+  15: './audio/audio_15_잠시만_기다려주세요__금방_도와드리겠습니다__취소하시려면_0~.mp3'
 };
 
 let currentAudioSequence = [];
@@ -407,6 +407,8 @@ function playNextAudio() {
 
   audio.pause();
   audio.onended = null;
+  audio.volume = 0.7; // MP3 볼륨 70% 유지
+  
   audio.src = voiceFiles[currentAudioSequence[currentAudioIndex]];
   audio.play().catch(e => console.log('재생 차단됨', e));
 
@@ -416,40 +418,36 @@ function playNextAudio() {
   };
 }
 
-// 1번 화면: 메인 진입
+// 1번 화면: 메인 진입 (0번 ~ 3번 파일)
 function openVoiceMode() {
   hideAllScreens();
   document.getElementById('voice-main-screen').classList.remove('hidden');
-  playAudioSequence([0, 1, 2, 3, 4]); 
+  playAudioSequence([0, 1, 2, 3]); 
 }
 
-// 2번 화면: 1번(음료주문) 누르고 세부 진입
+// 2번 화면: 1번(주문하기) 누르고 세부 진입 (4번 ~ 13번 파일)
 function goToVoiceMenu() {
   hideAllScreens();
   document.getElementById('voice-menu-screen').classList.remove('hidden');
-  playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); 
+  playAudioSequence([4, 5, 6, 7, 8, 9, 10, 11, 12, 13]); 
 }
 
-// 3번: 뒤로가기
+// 3번 화면: 뒤로가기 누르면 12번("이전화면 돌아가기") 말하고 메인으로 와서 (0번 ~ 3번) 다시 재생
 function goBackToVoiceMain() {
   currentAudioSequence = []; 
   const audio = document.getElementById('voice-audio');
   
-  // 모든 소리 중지
   if(audio) {
     audio.pause();
     audio.onended = null;
-  }
-  // TTS 중지
-  window.speechSynthesis.cancel();
-  
-  if(audio) {
-    audio.src = voiceFiles[13]; 
+    audio.volume = 0.7;
+    audio.src = voiceFiles[12]; // audio_12 (이전 화면으로 돌아가기)
     audio.play().catch(e => console.log(e));
+    
     audio.onended = () => {
       hideAllScreens();
       document.getElementById('voice-main-screen').classList.remove('hidden');
-      playAudioSequence([0, 1, 2, 3, 4]);
+      playAudioSequence([0, 1, 2, 3]);
     };
   }
 }
@@ -460,35 +458,22 @@ function closeVoiceMode() {
   document.getElementById('home-screen').classList.remove('hidden');
   const audio = document.getElementById('voice-audio');
   if (audio) { audio.pause(); audio.onended = null; }
-  window.speechSynthesis.cancel(); // 기계음도 꺼지게 처리
 }
 
-// 🔥 [새로 추가된 부분!] 음성 모드 전용 직원 호출 화면 띄우기 및 TTS 기계음 읽기 🔥
+// 🔥 직접 녹음하신 직원 호출 오디오(14번, 15번 파일) 완벽 연결! 🔥
 function callVoiceStaff() {
   hideAllScreens();
   document.getElementById('voice-staff-call-screen').classList.remove('hidden');
   
-  // 기존 재생되던 녹음 파일 멈춤
-  const audio = document.getElementById('voice-audio');
-  if (audio) {
-    audio.pause();
-    audio.onended = null;
-    currentAudioSequence = [];
-  }
-
-  // 아직 음성 파일이 없으므로 임시로 기계음(TTS)이 읽어줍니다!
-  window.speechSynthesis.cancel(); 
-  const speech = new SpeechSynthesisUtterance("직원 호출을 하셨습니다. 직원이 오고 있습니다. 취소하시려면 영번을 눌러주세요.");
-  speech.lang = 'ko-KR'; // 한국어 목소리
-  window.speechSynthesis.speak(speech);
+  // 기계음 전부 삭제, 14번 -> 15번 순서로 재생!
+  playAudioSequence([14, 15]);
 }
 
 // 직원 호출 취소
 function cancelVoiceStaffCall() {
   hideAllScreens();
   document.getElementById('voice-main-screen').classList.remove('hidden'); 
-  window.speechSynthesis.cancel(); // 기계음 즉시 정지
-  playAudioSequence([0, 1, 2, 3, 4]); 
+  playAudioSequence([0, 1, 2, 3]); // 취소하고 돌아오면 다시 메인메뉴 안내 시작
 }
 
 // 음성 지원 메인 화면 동작 컨트롤
@@ -496,29 +481,27 @@ function handleVoiceMainAction(key) {
   if (key === '1') {
     goToVoiceMenu();
   } else if (key === '2') {
-    playAudioSequence([1]); 
-  } else if (key === '3') {
     callVoiceStaff();
-  } else if (key === '4') {
+  } else if (key === '3') {
     closeVoiceMode();
   } else if (key === '*') {
-    playAudioSequence([0, 1, 2, 3, 4]); 
+    playAudioSequence([0, 1, 2, 3]); // 다시 듣기
   }
 }
 
 // 음성 지원 메뉴(음료) 화면 동작 컨트롤
 function handleVoiceMenuAction(key) {
-  if (key === '1') playAudioSequence([7]);
-  else if (key === '2') playAudioSequence([8]);
-  else if (key === '3') playAudioSequence([9]);
-  else if (key === '4') playAudioSequence([10]);
-  else if (key === '5') playAudioSequence([11]);
-  else if (key === '6') playAudioSequence([12]);
+  if (key === '1') playAudioSequence([6]);
+  else if (key === '2') playAudioSequence([7]);
+  else if (key === '3') playAudioSequence([8]);
+  else if (key === '4') playAudioSequence([9]);
+  else if (key === '5') playAudioSequence([10]);
+  else if (key === '6') playAudioSequence([11]);
   else if (key === '7') {
-    goBackToVoiceMain(); 
+    goBackToVoiceMain(); // 뒤로가기
   } 
   else if (key === '*') {
-    playAudioSequence([5, 6, 7, 8, 9, 10, 11, 12, 13, 14]); 
+    playAudioSequence([4, 5, 6, 7, 8, 9, 10, 11, 12, 13]); // 음료메뉴 전체 다시 듣기
   }
 }
 
@@ -529,7 +512,7 @@ document.addEventListener('keydown', function(event) {
   const voiceStaff = document.getElementById('voice-staff-call-screen');
 
   if (!voiceMain.classList.contains('hidden')) {
-    const validKeys = ['1', '2', '3', '4', '*'];
+    const validKeys = ['1', '2', '3', '*']; // 메뉴검색 빠진 버튼 목록!
     if (validKeys.includes(event.key)) {
       handleVoiceMainAction(event.key);
     }
