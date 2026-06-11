@@ -24,8 +24,11 @@ const menuDescriptions = {
   '녹차': '깔끔하고 깊은 맛을 내는 부드러운 녹차',
   '오렌지 주스': '신선한 오렌지를 그대로 짠 상큼한 과일 주스',
   '사과 주스': '달콤한 사과 과즙이 가득한 100% 사과 주스',
-  '딸기 바나나 주스': '상큼한 딸기와 부드러운 바나나의 달콤한 조화',
+  '딸기 바나나 스무디': '상큼한 딸기와 부드러운 바나나의 달콤한 조화',
   '치즈 케이크': '입 안 가득 퍼지는 진한 치즈의 풍미가 매력적인 케이크',
+  '초코 머핀': '달콤하고 부드러운 초코칩이 가득한 머핀',
+  '크로플': '바삭하고 쫀득한 식감이 일품인 크루아상 와플',
+  '마카롱': '겉은 바삭, 속은 쫀득한 달콤한 마카롱',
   '망고 스무디': '달콤한 망고를 듬뿍 갈아 만든 시원한 스무디'
 };
 
@@ -55,7 +58,6 @@ function changeCategory(category, element) {
 
   const tempToggle = document.getElementById('temp-toggle-area');
   
-  // 🔥 확실한 에러 수정: 간식과 주스일 때는 토글 버튼을 화면에서 아예 없애버림 (display: none)
   if(category === 'snack' || category === 'juice') {
     tempToggle.style.display = 'none';
   } else {
@@ -76,17 +78,23 @@ function setTemp(temp, element) {
   const vanillalatteCard = document.getElementById('card-vanillalatte');
   const caramellatteImg = document.getElementById('img-caramellatte');
   const caramellatteCard = document.getElementById('card-caramellatte');
+  
+  const creamcoldbrewCard = document.getElementById('card-creamcoldbrew');
 
   if(temp === '따뜻하게') {
     if(americanoImg) { americanoImg.src = './images/hotAmericano.png'; americanoCard.setAttribute('onclick', "openDetail('아메리카노', 4000, './images/hotAmericano.png')"); }
     if(cafelatteImg) { cafelatteImg.src = './images/hotCafeLatte.png'; cafelatteCard.setAttribute('onclick', "openDetail('카페라떼', 4800, './images/hotCafeLatte.png')"); }
     if(vanillalatteImg) { vanillalatteImg.src = './images/hotVanillaLatte.png'; vanillalatteCard.setAttribute('onclick', "openDetail('바닐라라떼', 5300, './images/hotVanillaLatte.png')"); }
     if(caramellatteImg) { caramellatteImg.src = './images/hotCaramelLatte.png'; caramellatteCard.setAttribute('onclick', "openDetail('카라멜 라떼', 5500, './images/hotCaramelLatte.png')"); }
+    // 따뜻하게 메뉴일 때 크림콜드브루 숨김
+    if(creamcoldbrewCard) creamcoldbrewCard.style.display = 'none';
   } else {
     if(americanoImg) { americanoImg.src = './images/iceAmericano.png'; americanoCard.setAttribute('onclick', "openDetail('아메리카노', 4000, './images/iceAmericano.png')"); }
     if(cafelatteImg) { cafelatteImg.src = './images/iceCafeLatte.png'; cafelatteCard.setAttribute('onclick', "openDetail('카페라떼', 4800, './images/iceCafeLatte.png')"); }
     if(vanillalatteImg) { vanillalatteImg.src = './images/iceVanillaLatte.png'; vanillalatteCard.setAttribute('onclick', "openDetail('바닐라라떼', 5300, './images/iceVanillaLatte.png')"); }
     if(caramellatteImg) { caramellatteImg.src = './images/iceCaramelLatte.png'; caramellatteCard.setAttribute('onclick', "openDetail('카라멜 라떼', 5500, './images/iceCaramelLatte.png')"); }
+    // 차갑게 메뉴일 때 크림콜드브루 다시 보임
+    if(creamcoldbrewCard) creamcoldbrewCard.style.display = 'flex';
   }
 }
 
@@ -97,6 +105,18 @@ function toggleFontSize() {
 }
 
 function openDetail(name, price, imgSrc) {
+  // 간식일 경우 옵션창 건너뛰고 바로 장바구니로!
+  if (currentCategory === 'snack') {
+    const existingItemIndex = cart.findIndex(item => item.name === name && item.optionStr === '');
+    if (existingItemIndex > -1) {
+      cart[existingItemIndex].qty += 1;
+    } else {
+      cart.push({ name: name, price: price, optionStr: '', qty: 1 });
+    }
+    updateCartUI();
+    return;
+  }
+
   detailItemName = name;
   detailBasePrice = price;
   detailItemImg = imgSrc || ''; 
@@ -116,7 +136,6 @@ function openDetail(name, price, imgSrc) {
   }
 
   const tempBadge = document.getElementById('detail-temp-badge');
-  // 간식과 주스일 때는 '차갑게/따뜻하게' 뱃지 완전 숨기기
   if (currentCategory !== 'snack' && currentCategory !== 'juice') {
     tempBadge.style.display = 'inline-block';
     tempBadge.innerText = currentTemp;
@@ -126,40 +145,36 @@ function openDetail(name, price, imgSrc) {
   }
 
   const optionsArea = document.getElementById('detail-options-area');
-  if(currentCategory === 'snack') {
-    optionsArea.style.display = 'none';
-  } else {
-    optionsArea.style.display = 'block';
-    
-    document.querySelectorAll('.free-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
-    document.querySelectorAll('.paid-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
-    document.querySelectorAll('.size-box').forEach(b => b.classList.remove('active-opt'));
-    
-    const firstSizeBox = document.querySelector('.size-box');
-    if (firstSizeBox) firstSizeBox.classList.add('active-opt');
+  optionsArea.style.display = 'block';
+  
+  document.querySelectorAll('.free-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
+  document.querySelectorAll('.paid-options-grid .opt-box').forEach(b => b.classList.remove('active-opt'));
+  document.querySelectorAll('.size-box').forEach(b => b.classList.remove('active-opt'));
+  
+  const firstSizeBox = document.querySelector('.size-box');
+  if (firstSizeBox) firstSizeBox.classList.add('active-opt');
 
-    const milkDrinks = ['카페라떼', '바닐라라떼', '카라멜 라떼', '크림콜드브루']; 
-    const optShot = document.getElementById('opt-shot');
-    const optMilk = document.getElementById('opt-milk');
-    const paidTitle = document.getElementById('paid-options-title');
-    const paidGrid = document.getElementById('paid-options-grid');
+  const milkDrinks = ['카페라떼', '바닐라라떼', '카라멜 라떼', '크림콜드브루']; 
+  const optShot = document.getElementById('opt-shot');
+  const optMilk = document.getElementById('opt-milk');
+  const paidTitle = document.getElementById('paid-options-title');
+  const paidGrid = document.getElementById('paid-options-grid');
 
-    if (optShot && optMilk && paidTitle && paidGrid) {
-      optShot.style.display = 'flex';
-      optMilk.style.display = 'flex';
-      paidTitle.style.display = 'block';
-      paidGrid.style.display = 'grid';
-      paidGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+  if (optShot && optMilk && paidTitle && paidGrid) {
+    optShot.style.display = 'flex';
+    optMilk.style.display = 'flex';
+    paidTitle.style.display = 'block';
+    paidGrid.style.display = 'grid';
+    paidGrid.style.gridTemplateColumns = 'repeat(2, 1fr)';
 
-      if (currentCategory !== 'coffee') optShot.style.display = 'none';
-      if (!milkDrinks.includes(name)) optMilk.style.display = 'none';
+    if (currentCategory !== 'coffee') optShot.style.display = 'none';
+    if (!milkDrinks.includes(name)) optMilk.style.display = 'none';
 
-      if (optShot.style.display === 'none' && optMilk.style.display === 'none') {
-        paidTitle.style.display = 'none';
-        paidGrid.style.display = 'none';
-      } else if (optShot.style.display === 'none' || optMilk.style.display === 'none') {
-        paidGrid.style.gridTemplateColumns = '1fr'; 
-      }
+    if (optShot.style.display === 'none' && optMilk.style.display === 'none') {
+      paidTitle.style.display = 'none';
+      paidGrid.style.display = 'none';
+    } else if (optShot.style.display === 'none' || optMilk.style.display === 'none') {
+      paidGrid.style.gridTemplateColumns = '1fr'; 
     }
   }
   
@@ -230,7 +245,6 @@ function updateDetailBottomBar() {
   if (currentCategory !== 'snack') {
     document.getElementById('bottom-name').innerText = `${detailItemName} (${detailSelectedSize.name})`;
     
-    // 주스가 아닐 때만 '차갑게/따뜻하게' 텍스트를 옵션 목록에 넣음
     if (currentCategory !== 'juice') {
       summaryText.push(currentTemp);
     }
@@ -251,7 +265,6 @@ function addToCart() {
 
   let optionArray = [];
   if (currentCategory !== 'snack') {
-    // 주스가 아닐 때만 장바구니 옵션에 온도 추가
     if (currentCategory !== 'juice') {
       optionArray.push(currentTemp);
     }
@@ -382,14 +395,23 @@ function cancelStaffCall() {
   document.getElementById(previousScreenId).classList.remove('hidden'); 
 }
 
+// === 음성 모드 및 연쇄 재생 로직 ===
 function openVoiceMode() {
   hideAllScreens();
   document.getElementById('voice-screen').classList.remove('hidden');
   
   const audio = document.getElementById('voice-audio');
   if (audio) {
-    audio.currentTime = 0; 
-    audio.play().catch(e => console.log('자동 재생이 차단되었습니다.', e));
+    // 첫 번째 오디오 재생 ("차가운 메뉴 화면입니다")
+    audio.src = './audio/audio_5_음료_주문__커피_카테고리의_차가운_메뉴_화면입니다_.mp3';
+    audio.play().catch(e => console.log('자동 재생 차단됨', e));
+    
+    // 끝나면 두 번째 안내 오디오 ("키패드를 눌러주세요") 자동 재생
+    audio.onended = () => {
+      audio.src = './audio/audio_6_키패드_숫자를_눌러_메뉴를_선택해_주세요_.mp3';
+      audio.play().catch(e => console.log('재생 차단됨', e));
+      audio.onended = null; 
+    };
   }
 }
 
@@ -400,6 +422,7 @@ function closeVoiceMode() {
   const audio = document.getElementById('voice-audio');
   if (audio) {
     audio.pause();
+    audio.onended = null;
   }
 }
 
@@ -413,20 +436,43 @@ function cancelVoiceStaffCall() {
   document.getElementById('voice-screen').classList.remove('hidden'); 
 }
 
+// 키패드 오디오 매핑 (올려주신 실제 파일명과 매칭)
+const audioFiles = {
+  '1': './audio/audio_7_일번__아메리카노__4_000원_.mp3',
+  '2': './audio/audio_8_이번__카페라떼__4_800원_.mp3',
+  '3': './audio/audio_9_삼번__바닐라라떼__5_300원_.mp3',
+  '4': './audio/audio_10_사번__카라멜_라떼__5_500원_.mp3',
+  '5': './audio/audio_11_오번__크림콜드브루__5_800원_.mp3',
+  '6': './audio/audio_12_육번__따뜻한_메뉴로_변경_.mp3',
+  '7': './audio/audio_13_칠번__이전_화면으로_돌아가기_.mp3',
+  '*': './audio/audio_14_다시_들으시려면_별표_버튼을_눌러주세요_.mp3'
+};
+
+// 키보드 오디오 재생 이벤트
 document.addEventListener('keydown', function(event) {
   const voiceScreen = document.getElementById('voice-screen');
   const voiceStaffScreen = document.getElementById('voice-staff-call-screen');
+  const audio = document.getElementById('voice-audio');
 
-  if (!voiceScreen.classList.contains('hidden')) {
-    if (event.key === '3') {
-      callVoiceStaff();
-    } else if (event.key === '5') {
-      closeVoiceMode();
+  if (!voiceScreen.classList.contains('hidden') || !voiceStaffScreen.classList.contains('hidden')) {
+    
+    // 오디오 재생
+    if (audioFiles[event.key] && !voiceScreen.classList.contains('hidden')) {
+      audio.onended = null; // 안내음성 연쇄재생 방지
+      audio.src = audioFiles[event.key];
+      audio.play().catch(e => console.log('재생 차단됨', e));
     }
-  } 
-  else if (!voiceStaffScreen.classList.contains('hidden')) {
-    if (event.key === '0') {
-      cancelVoiceStaffCall();
+
+    // 메뉴 이동 기능
+    if (!voiceScreen.classList.contains('hidden')) {
+      if (event.key === '7') {
+        // 7번을 누르면 음성이 나오는 시간을 벌기 위해 1.5초 뒤에 닫기
+        setTimeout(() => { closeVoiceMode(); }, 1500);
+      }
+    } else if (!voiceStaffScreen.classList.contains('hidden')) {
+      if (event.key === '0') {
+        cancelVoiceStaffCall();
+      }
     }
   }
 });

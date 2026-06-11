@@ -54,7 +54,6 @@
           <div class="temp-btn active-temp scalable-text" onclick="setTemp('차갑게', this)">차갑게</div>
         </div>
         
-        <!-- 커피 -->
         <div id="list-coffee" class="menu-grid">
           <div class="menu-card" id="card-americano" onclick="openDetail('아메리카노', 4000, './images/iceAmericano.png')">
             <div class="img-box"><img id="img-americano" src="./images/iceAmericano.png" alt="아메리카노"></div>
@@ -78,7 +77,6 @@
           </div>
         </div>
         
-        <!-- 차 -->
         <div id="list-tea" class="menu-grid hidden">
           <div class="menu-card" onclick="openDetail('캐모마일 차', 4500, './images/chamomileTea.png')">
             <div class="img-box"><img src="./images/chamomileTea.png" alt="캐모마일 차"></div>
@@ -98,7 +96,6 @@
           </div>
         </div>
         
-        <!-- 주스 -->
         <div id="list-juice" class="menu-grid hidden">
           <div class="menu-card" onclick="openDetail('오렌지 주스', 5000, './images/orange.png')">
             <div class="img-box"><img src="./images/orange.png" alt="오렌지 주스"></div>
@@ -108,23 +105,33 @@
             <div class="img-box"><img src="./images/apple.png" alt="사과 주스"></div>
             <div class="menu-info"><p class="menu-name scalable-text">사과 주스</p><p class="menu-price scalable-text">₩ 5,000</p></div>
           </div>
-          <div class="menu-card" onclick="openDetail('딸기 바나나 주스', 5800, './images/strawberryBanana.png')">
-            <div class="img-box"><img src="./images/strawberryBanana.png" alt="딸기 바나나 주스"></div>
-            <div class="menu-info"><p class="menu-name scalable-text">딸기 바나나 주스</p><p class="menu-price scalable-text">₩ 5,800</p></div>
+          <div class="menu-card" onclick="openDetail('딸기 바나나 스무디', 5800, './images/strawberryBanana.png')">
+            <div class="img-box"><img src="./images/strawberryBanana.png" alt="딸기 바나나 스무디"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">딸기 바나나 스무디</p><p class="menu-price scalable-text">₩ 5,800</p></div>
           </div>
-          <!-- 망고 스무디 변경됨 -->
           <div class="menu-card" onclick="openDetail('망고 스무디', 6000, './images/mangoSmoothie.png')">
             <div class="img-box"><img src="./images/mangoSmoothie.png" alt="망고 스무디"></div>
             <div class="menu-info"><p class="menu-name scalable-text">망고 스무디</p><p class="menu-price scalable-text">₩ 6,000</p></div>
           </div>
         </div>
         
-        <!-- 간식 -->
         <div id="list-snack" class="menu-grid hidden">
-          <div class="menu-card" onclick="openDetail('치즈 케이크', 6500, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">치즈 케이크</p><p class="menu-price scalable-text">₩ 6,500</p></div></div>
-          <div class="menu-card" onclick="openDetail('초코 머핀', 3500, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">초코 머핀</p><p class="menu-price scalable-text">₩ 3,500</p></div></div>
-          <div class="menu-card" onclick="openDetail('크로플', 4500, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">크로플</p><p class="menu-price scalable-text">₩ 4,500</p></div></div>
-          <div class="menu-card" onclick="openDetail('마카롱', 2500, '')"><div class="img-placeholder"></div><div class="menu-info"><p class="menu-name scalable-text">마카롱</p><p class="menu-price scalable-text">₩ 2,500</p></div></div>
+          <div class="menu-card" onclick="openDetail('치즈 케이크', 6500, './images/cheeseCake.png')">
+            <div class="img-box"><img src="./images/cheeseCake.png" alt="치즈 케이크"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">치즈 케이크</p><p class="menu-price scalable-text">₩ 6,500</p></div>
+          </div>
+          <div class="menu-card" onclick="openDetail('초코 머핀', 3500, './images/chocoMuffin.png')">
+            <div class="img-box"><img src="./images/chocoMuffin.png" alt="초코 머핀"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">초코 머핀</p><p class="menu-price scalable-text">₩ 3,500</p></div>
+          </div>
+          <div class="menu-card" onclick="openDetail('크로플', 4500, './images/croffle.png')">
+            <div class="img-box"><img src="./images/croffle.png" alt="크로플"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">크로플</p><p class="menu-price scalable-text">₩ 4,500</p></div>
+          </div>
+          <div class="menu-card" onclick="openDetail('마카롱', 2500, './images/macaron.png')">
+            <div class="img-box"><img src="./images/macaron.png" alt="마카롱"></div>
+            <div class="menu-info"><p class="menu-name scalable-text">마카롱</p><p class="menu-price scalable-text">₩ 2,500</p></div>
+          </div>
         </div>
       </div>
 
@@ -153,7 +160,6 @@
       </footer>
     </div>
 
-    <!-- 3. 상세 옵션 선택 화면 -->
     <div id="detail-screen" class="screen hidden" style="background-color: #faf6f2;">
       <header class="header">
         <div class="home-btn" onclick="closeDetail()" style="border-radius: 50%; padding: 12px 18px; font-size: 22px; font-weight: bold;">&lt;</div>
@@ -224,7 +230,6 @@
       </div>
     </div>
 
-    <!-- 4. 결제 관련 화면 -->
     <div id="payment-method-screen" class="screen hidden">
       <header class="header">
         <div class="home-btn" onclick="goToMenu('매장')" style="border-radius: 50%; padding: 12px 18px; font-size: 22px; font-weight: bold;">&lt;</div>
@@ -262,7 +267,6 @@
       </div>
     </div>
 
-    <!-- 5. 직원 호출 팝업 -->
     <div id="staff-call-screen" class="screen hidden" style="background-color: var(--bg-color);">
       <div class="processing-content">
         <div class="process-icon" style="font-size: 80px; animation: none; margin-bottom: 30px;">🎧</div>
@@ -275,18 +279,21 @@
       </div>
     </div>
 
-    <!-- 6. 음성 안내 모드 -->
     <div id="voice-screen" class="screen hidden" style="background-color: #1a1a1a;">
       <div class="voice-header"><span>|||\|</span> 음성 안내 접근성 모드</div>
-      <div class="voice-list">
-        <div class="voice-item">1. 음료 주문</div>
-        <div class="voice-item">2. 메뉴 검색</div>
-        <div class="voice-item" onclick="callVoiceStaff()">3. 직원 호출</div>
-        <div class="voice-item">4. 설정</div>
-        <div class="voice-item" onclick="closeVoiceMode()">5. 종료</div>
+      <div class="voice-list" style="overflow-y: auto; max-height: 55vh; padding-bottom: 10px;">
+        <div class="voice-item">1. 아메리카노</div>
+        <div class="voice-item">2. 카페라떼</div>
+        <div class="voice-item">3. 바닐라라떼</div>
+        <div class="voice-item">4. 카라멜 라떼</div>
+        <div class="voice-item">5. 크림콜드브루</div>
+        <div class="voice-item">6. 따뜻한 메뉴로 변경</div>
+        <div class="voice-item" onclick="closeVoiceMode()">7. 이전 화면으로 돌아가기</div>
+        <div class="voice-item">*. 다시 듣기</div>
       </div>
-      <div class="voice-footer">키패드 숫자를 눌러<br>선택하세요.</div>
-      <audio id="voice-audio" src="./voice.mp3"></audio>
+      <div class="voice-footer" style="margin-top: 15px;">키패드 숫자를 눌러<br>선택하세요.</div>
+      
+      <audio id="voice-audio" src="./audio/audio_5_음료_주문__커피_카테고리의_차가운_메뉴_화면입니다_.mp3"></audio>
     </div>
 
     <div id="voice-staff-call-screen" class="screen hidden" style="background-color: #1a1a1a; padding: 40px 20px; text-align: center; justify-content: center;">
