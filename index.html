@@ -279,8 +279,21 @@
       </div>
     </div>
 
-    <div id="voice-screen" class="screen hidden" style="background-color: #1a1a1a;">
+    <div id="voice-main-screen" class="screen hidden" style="background-color: #1a1a1a;">
       <div class="voice-header"><span>|||\|</span> 음성 안내 접근성 모드</div>
+      <div class="voice-list" style="overflow-y: auto; max-height: 55vh; padding-bottom: 10px;">
+        <div class="voice-item">0. 음료 주문</div>
+        <div class="voice-item">1. 메뉴 검색</div>
+        <div class="voice-item">2. 메뉴 검색</div>
+        <div class="voice-item" onclick="callVoiceStaff()">3. 직원 호출</div>
+        <div class="voice-item" onclick="closeVoiceMode()">4. 음성 안내 모드 종료</div>
+        <div class="voice-item" onclick="closeVoiceMode()">7. 이전 화면으로 돌아가기</div>
+      </div>
+      <div class="voice-footer" style="margin-top: 15px;">키패드 숫자를 눌러<br>선택하세요.</div>
+    </div>
+
+    <div id="voice-menu-screen" class="screen hidden" style="background-color: #1a1a1a;">
+      <div class="voice-header"><span>|||\|</span> 음료 주문 (커피 카테고리)</div>
       <div class="voice-list" style="overflow-y: auto; max-height: 55vh; padding-bottom: 10px;">
         <div class="voice-item">1. 아메리카노</div>
         <div class="voice-item">2. 카페라떼</div>
@@ -288,13 +301,13 @@
         <div class="voice-item">4. 카라멜 라떼</div>
         <div class="voice-item">5. 크림콜드브루</div>
         <div class="voice-item">6. 따뜻한 메뉴로 변경</div>
-        <div class="voice-item" onclick="closeVoiceMode()">7. 이전 화면으로 돌아가기</div>
+        <div class="voice-item" onclick="goBackToVoiceMain()">7. 이전 화면으로 돌아가기</div>
         <div class="voice-item">*. 다시 듣기</div>
       </div>
       <div class="voice-footer" style="margin-top: 15px;">키패드 숫자를 눌러<br>선택하세요.</div>
-      
-      <audio id="voice-audio" src="./audio/audio_5_음료_주문__커피_카테고리의_차가운_메뉴_화면입니다_.mp3"></audio>
     </div>
+
+    <audio id="voice-audio"></audio>
 
     <div id="voice-staff-call-screen" class="screen hidden" style="background-color: #1a1a1a; padding: 40px 20px; text-align: center; justify-content: center;">
       <div style="color: #d4af37; font-size: 40px; font-weight: bold; line-height: 1.5; margin-bottom: 50px;">
